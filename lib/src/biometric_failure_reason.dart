@@ -1,0 +1,18 @@
+enum FaceAuthenticationFailureReason {
+  faceNotDetected,
+  multipleFacesDetected,
+  poorFaceQuality,
+  livenessFailed,
+  challengeTimeout,
+  antiSpoofFailed,
+  faceMismatch,
+  templateNotFound,
+  templateDecryptionFailed,
+  modelUnavailable,
+  modelVersionMismatch,
+  sessionTimeout,
+  cameraPermissionDenied,
+  cameraUnavailable,
+  cancelled,
+  unknown,
+}

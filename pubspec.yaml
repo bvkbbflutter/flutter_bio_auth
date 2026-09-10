@@ -1,0 +1,39 @@
+name: flutter_bio_auth
+description: >
+  On-device face detection, tracking, active liveness challenges, and an
+  injectable 1:1 face-recognition / anti-spoof pipeline for Flutter.
+  Detection/tracking/liveness work with zero bundled AI models (native
+  ML Kit on Android, Vision framework on iOS). Recognition and passive
+  anti-spoofing are model-driven and loaded from a developer-supplied
+  asset path at initialize() time.
+version: 0.1.0
+homepage: https://example.com/flutter_bio_auth
+publish_to: none
+
+environment:
+  # Compatible with the Dart SDK shipped by Flutter 3.24.3.
+  sdk: ">=3.5.0 <4.0.0"
+  flutter: ">=3.24.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  plugin_platform_interface: ^2.1.8
+  crypto: ^3.0.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: com.vinay.flutter_bio_auth
+        pluginClass: FaceBiometricPlugin
+      ios:
+        pluginClass: FaceBiometricPlugin
+  # Ship no default model assets. Consumers point FaceBiometricConfig at
+  # their own bundled model via their OWN app's asset declarations; the
+  # plugin itself declares nothing here so it never ships fake weights.

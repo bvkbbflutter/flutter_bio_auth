@@ -1,0 +1,22 @@
+/// Coarse-grained state of an in-progress enroll/authenticate session,
+/// streamed from native to Dart via the controller's state stream.
+enum FaceBiometricState {
+  idle,
+  initializing,
+  requestingPermission,
+  cameraReady,
+  detectingFace,
+  faceDetected,
+  validatingFace,
+  runningLiveness,
+  challengeInProgress,
+  generatingEmbedding,
+  matchingFace,
+  checkingAntiSpoof,
+  authenticating,
+  success,
+  failed,
+  timeout,
+  permissionDenied,
+  error,
+}
