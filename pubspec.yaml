@@ -7,8 +7,10 @@ description: >
   anti-spoofing are model-driven and loaded from a developer-supplied
   asset path at initialize() time.
 version: 0.1.0
-homepage: https://example.com/flutter_bio_auth
-publish_to: none
+
+homepage: https://github.com/bvkbbflutter/flutter_bio_auth
+repository: https://github.com/bvkbbflutter/flutter_bio_auth
+issue_tracker: https://github.com/bvkbbflutter/flutter_bio_auth/issues
 
 environment:
   # Compatible with the Dart SDK shipped by Flutter 3.24.3.
@@ -37,3 +39,6 @@ flutter:
   # Ship no default model assets. Consumers point FaceBiometricConfig at
   # their own bundled model via their OWN app's asset declarations; the
   # plugin itself declares nothing here so it never ships fake weights.
+  assets:
+    - assets/models/mobilefacenet.tflite
+    - assets/images/
