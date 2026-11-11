@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bio_auth/flutter_bio_auth.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import 'pages/home_page.dart';
 
@@ -21,7 +22,21 @@ class _FaceBiometricExampleAppState extends State<FaceBiometricExampleApp> {
   @override
   void initState() {
     super.initState();
-    _initFuture = FaceBiometric.initialize(
+    _initFuture = _initializeApp();
+  }
+
+  Future<void> _initializeApp() async {
+    // Request camera permission upfront when loading the app
+    try {
+      final PermissionStatus status = await Permission.camera.status;
+      if (!status.isGranted) {
+        await Permission.camera.request();
+      }
+    } catch (_) {
+      // Graceful fallback in test or headless environments
+    }
+
+    await FaceBiometric.initialize(
       config: const FaceBiometricConfig(
         recognitionThreshold: 0.65,
         livenessThreshold: 0.80,
