@@ -79,109 +79,116 @@ class _FaceBiometricScannerState extends State<FaceBiometricScanner> {
     final String timerText = '00:${_remainingSeconds.toString().padLeft(2, '0')}';
     final bool isUrgent = _remainingSeconds <= 5;
 
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(20),
-      child: Stack(
-        fit: StackFit.expand,
-        children: <Widget>[
-          // 1. Native camera fills available area
-          const FaceBiometricCameraView(),
+    return Material(
+      color: Colors.black,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: Stack(
+          fit: StackFit.expand,
+          children: <Widget>[
+            // 1. Native camera fills available area
+            const FaceBiometricCameraView(),
 
-          // 2. Cutout mask with transparent central ellipse & glowing reticle
-          StreamBuilder<FaceBiometricState>(
-            stream: widget.controller.stateStream,
-            builder: (BuildContext context, AsyncSnapshot<FaceBiometricState> snap) {
-              return FaceCutoutOverlay(state: snap.data);
-            },
-          ),
+            // 2. Cutout mask with transparent central ellipse & glowing reticle
+            StreamBuilder<FaceBiometricState>(
+              stream: widget.controller.stateStream,
+              builder: (BuildContext context, AsyncSnapshot<FaceBiometricState> snap) {
+                return FaceCutoutOverlay(state: snap.data);
+              },
+            ),
 
-          // 3. Top Header Bar: Guidance & Countdown Timer
-          Positioned(
-            top: 16,
-            left: 16,
-            right: 16,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                // Guidance Badge
-                Flexible(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-                    decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.75),
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: Colors.white24),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        const Icon(Icons.face_retouching_natural, color: Colors.cyanAccent, size: 16),
-                        const SizedBox(width: 6),
-                        Flexible(
-                          child: Text(
-                            widget.title,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8),
-
-                // Live Countdown Timer Badge
-                if (widget.showTimer)
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-                    decoration: BoxDecoration(
-                      color: isUrgent ? Colors.red.withOpacity(0.85) : Colors.black.withOpacity(0.75),
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: isUrgent ? Colors.redAccent : Colors.white24,
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        Icon(
-                          Icons.timer_outlined,
-                          size: 14,
-                          color: isUrgent ? Colors.white : Colors.amberAccent,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          timerText,
-                          style: TextStyle(
-                            color: isUrgent ? Colors.white : Colors.amberAccent,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 0.5,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                if (widget.onClose != null) ...<Widget>[
-                  const SizedBox(width: 6),
-                  InkWell(
-                    onTap: widget.onClose,
-                    borderRadius: BorderRadius.circular(20),
+            // 3. Top Header Bar: Guidance & Countdown Timer
+            Positioned(
+              top: 16,
+              left: 16,
+              right: 16,
+              child: Row(
+                children: <Widget>[
+                  // Guidance Badge
+                  Expanded(
                     child: Container(
-                      padding: const EdgeInsets.all(6),
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
                       decoration: BoxDecoration(
                         color: Colors.black.withOpacity(0.75),
-                        shape: BoxShape.circle,
+                        borderRadius: BorderRadius.circular(20),
                         border: Border.all(color: Colors.white24),
                       ),
-                      child: const Icon(Icons.close, color: Colors.white, size: 16),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          const Icon(Icons.face_retouching_natural, color: Colors.cyanAccent, size: 16),
+                          const SizedBox(width: 6),
+                          Expanded(
+                            child: Text(
+                              widget.title,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
+
+                  // Live Countdown Timer Badge
+                  if (widget.showTimer) ...<Widget>[
+                    const SizedBox(width: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+                      decoration: BoxDecoration(
+                        color: isUrgent ? Colors.red.withOpacity(0.85) : Colors.black.withOpacity(0.75),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: isUrgent ? Colors.redAccent : Colors.white24,
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Icon(
+                            Icons.timer_outlined,
+                            size: 14,
+                            color: isUrgent ? Colors.white : Colors.amberAccent,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            timerText,
+                            style: TextStyle(
+                              color: isUrgent ? Colors.white : Colors.amberAccent,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+
+                  if (widget.onClose != null) ...<Widget>[
+                    const SizedBox(width: 8),
+                    Material(
+                      color: Colors.transparent,
+                      shape: const CircleBorder(),
+                      child: InkWell(
+                        onTap: widget.onClose,
+                        customBorder: const CircleBorder(),
+                        child: Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                            color: Colors.black.withOpacity(0.75),
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Colors.white24),
+                          ),
+                          child: const Icon(Icons.close, color: Colors.white, size: 16),
+                        ),
+                      ),
+                    ),
+                  ],
                 ],
-              ],
+              ),
             ),
-          ),
 
           // 4. Bottom Challenge HUD & Status
           Positioned(
@@ -211,8 +218,9 @@ class _FaceBiometricScannerState extends State<FaceBiometricScanner> {
           ),
         ],
       ),
-    );
-  }
+    ),
+  );
+}
 }
 
 class _ChallengeCard extends StatelessWidget {

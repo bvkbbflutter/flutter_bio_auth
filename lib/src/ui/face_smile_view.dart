@@ -103,36 +103,45 @@ class _FaceSmileViewState extends State<FaceSmileView> {
       );
     }
 
-    return Card(
-      elevation: 0,
-      color: Theme.of(context).colorScheme.surfaceContainerHighest.withOpacity(0.5),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Icon(Icons.sentiment_dissatisfied, size: 64, color: Colors.orange),
-            const SizedBox(height: 16),
-            Text(
-              _errorMessage ?? 'Smile check ended',
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 20),
-            FilledButton.icon(
-              onPressed: _startSmileCheck,
-              icon: const Icon(Icons.refresh),
-              label: const Text('Try Again'),
-            ),
-            if (widget.onCancel != null) ...<Widget>[
-              const SizedBox(height: 8),
-              TextButton(
-                onPressed: widget.onCancel,
-                child: const Text('Cancel'),
+    return Material(
+      color: Colors.black,
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Card(
+            elevation: 0,
+            color: Theme.of(context).colorScheme.surfaceContainerHighest.withOpacity(0.5),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  const Icon(Icons.sentiment_dissatisfied, size: 64, color: Colors.orange),
+                  const SizedBox(height: 16),
+                  Text(
+                    _errorMessage ?? 'Smile check ended',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 20),
+                  FilledButton.icon(
+                    onPressed: _startSmileCheck,
+                    icon: const Icon(Icons.refresh),
+                    label: const Text('Try Again'),
+                  ),
+                  if (widget.onCancel != null) ...<Widget>[
+                    const SizedBox(height: 8),
+                    TextButton(
+                      onPressed: widget.onCancel,
+                      child: const Text('Cancel'),
+                    ),
+                  ],
+                ],
               ),
-            ],
-          ],
+            ),
+          ),
         ),
       ),
     );

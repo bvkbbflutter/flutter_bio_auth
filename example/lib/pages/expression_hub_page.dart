@@ -22,18 +22,23 @@ class _ExpressionHubPageState extends State<ExpressionHubPage> {
   void _openSmileChallenge() {
     Navigator.of(context).push(
       MaterialPageRoute<void>(
-        builder: (context) => FaceSmileView(
-          onSmiled: (confidence) {
-            Navigator.of(context).pop();
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                    'Smile verified! Confidence: ${(confidence * 100).toInt()}% 😊'),
-                backgroundColor: Colors.green,
-              ),
-            );
-          },
-          onCancel: () => Navigator.of(context).pop(),
+        builder: (context) => Scaffold(
+          backgroundColor: Colors.black,
+          body: SafeArea(
+            child: FaceSmileView(
+              onSmiled: (confidence) {
+                Navigator.of(context).pop();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                        'Smile verified! Confidence: ${(confidence * 100).toInt()}% 😊'),
+                    backgroundColor: Colors.green,
+                  ),
+                );
+              },
+              onCancel: () => Navigator.of(context).pop(),
+            ),
+          ),
         ),
       ),
     );
