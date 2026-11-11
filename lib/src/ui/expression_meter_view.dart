@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../expression/expression_result.dart';
@@ -23,6 +24,7 @@ class ExpressionMeterView extends StatefulWidget {
 }
 
 class _ExpressionMeterViewState extends State<ExpressionMeterView> {
+  StreamSubscription<ExpressionResult>? _sub;
   ExpressionResult _current = const ExpressionResult(
     expression: FacialExpression.neutral,
     confidence: 0.85,
@@ -31,18 +33,33 @@ class _ExpressionMeterViewState extends State<ExpressionMeterView> {
       FacialExpression.neutral: 0.85,
       FacialExpression.blink: 0.05,
     },
+    smilingProbability: 0.10,
+    leftEyeOpenProbability: 0.95,
+    rightEyeOpenProbability: 0.95,
   );
 
   @override
   void initState() {
     super.initState();
-    FaceAI.startExpressionStream().listen((result) {
+    _startLive();
+  }
+
+  Future<void> _startLive() async {
+    await FaceAI.expression.startLiveExpressionSession();
+    _sub = FaceAI.startExpressionStream().listen((result) {
       if (mounted) {
         setState(() {
           _current = result;
         });
       }
     });
+  }
+
+  @override
+  void dispose() {
+    _sub?.cancel();
+    FaceAI.expression.stopLiveExpressionSession();
+    super.dispose();
   }
 
   @override
@@ -130,13 +147,19 @@ class _ExpressionMeterViewState extends State<ExpressionMeterView> {
                   _buildProgressBar(
                     'Smile',
                     _current.expressions[FacialExpression.smile] ?? 0.0,
-                    Colors.amberAccent,
+                    const Color(0xFF00E676),
                   ),
                   const SizedBox(height: 8),
                   _buildProgressBar(
                     'Neutral',
                     _current.expressions[FacialExpression.neutral] ?? 0.0,
-                    Colors.blueAccent,
+                    Colors.cyanAccent,
+                  ),
+                  const SizedBox(height: 8),
+                  _buildProgressBar(
+                    'Eye Openness',
+                    ((_current.leftEyeOpenProbability ?? 0.9) + (_current.rightEyeOpenProbability ?? 0.9)) / 2.0,
+                    Colors.amberAccent,
                   ),
                 ],
               ),

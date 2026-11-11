@@ -2,6 +2,39 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.1] - Face Enrollment, Mood Hub, Delivery Compliance & Pluggable Models Overhaul
+
+### Face Enrollment & Detection Status
+* **Vibrant Green Face Detection Reticle**: Replaced yellow indicator with high-visibility vibrant green bounding reticle (`#00E676` / `Colors.greenAccent`) immediately upon face detection and throughout enrollment.
+* **Resolved Enrollment Challenge Freeze**: Fixed issue where `EnrollmentSession` was waiting for liveness challenges without emitting instructions to Flutter. `emitChallengeProgress` is now wired properly.
+* **Fast vs. Guided Enrollment**: Added `enableLiveness` flag (`false` by default for rapid 5-sample enrollment, or `true` for guided liveness challenges).
+* **Calibrated Face Quality Gates**: Widened centering tolerance to 0.40 and frontal yaw/pitch thresholds to 36° to eliminate false rejections under normal lighting and angles.
+
+### Facial Expressions & Mood Hub
+* **Native Face Telemetry Stream**: Implemented real-time face detection stream (`startFaceDetection` / `stopFaceDetection` and `detectionStream`) bridging native ML Kit face analysis (smiling probability, left/right eye openness, head angles) directly into Flutter.
+* **Live Emotion Pipeline**: Updated `ExpressionService` to consume live telemetry with accurate classification of `smile`, `neutral`, `blink`, and `wink` with dynamic confidence scoring.
+* **Interactive Mood UI**: Wired `ExpressionMeterView` with dynamic progress bars, dominant emotion gauge, and real-time response.
+
+### Automatic Unique ID Generation
+* **Automatic ID Generation**: Implemented automatic unique ID generation (`USR_<timestamp_base36>_<random>`) for every new user entry.
+* **Flexible Custom Names**: Custom user name field is now optional; if provided, it is automatically concatenated as `"${custom}_${autoId}"`, or uses `autoId` directly if left empty.
+* **Regenerate & Inspect**: Added instant ID regeneration action and dedicated ID badge UI card in the enrollment screen.
+
+### Delivery Partner Compliance Overhaul
+* **Visible Camera Feed**: Redesigned the inspection view to keep the live camera feed clearly visible with green face reticle throughout the check-in process.
+* **No Premature Auto-Dismiss**: Eliminated arbitrary 1.2s auto-dismiss timer; requires explicit "Complete Shift Check-In" tap after passing all safety checks.
+* **Robust Uniform HSV Color Verification**: Implemented reliable uniform color matching using HSV color space distance calculations with configurable tolerance, supporting Zepto Purple, Swiggy Orange, Zomato Red, Blinkit Yellow, or custom presets.
+* **Motorcycle Presence Detection**: Added motorcycle stance and vehicle presence validation with configurable thresholds (`requireMotorcycle`, `minMotorcycleConfidence`).
+* **Granular Results & Reasons**: Added detailed reason strings (`uniformReason`, `helmetReason`, `motorcycleReason`, `faceReason`, `maskReason`) and status badges for each compliance gate.
+* **Live Test Mode**: Added an interactive "Simulate Non-Compliant Uniform" toggle in the UI to verify real-time rejection handling.
+
+### AI Models & Diagnostics Hub & Model Selection
+* **Multi-Model Catalog**: Registered multiple AI models out of the box (MobileFaceNet 192-d, ArcFace Mobile 512-d, FaceNet Mobile 128-d, MiniVision Anti-Spoof, EmotionNet Expression).
+* **Interactive Model Switcher**: Added a model selection bottom sheet allowing users to view metadata, switch active models, and benchmark inference latency.
+* **Persistent Model Preference**: Persisted selected active model across app restarts via `SharedPreferences`.
+* **Native Runtime Sync**: Connected `switchModel` across platform channels so native TFLite interpreters dynamically update input shapes and embedding dimensions.
+* **Responsive Layouts**: Replaced fixed button rows with responsive `Wrap` layouts to prevent UI overflow across all mobile screen sizes.
+
 ## [0.2.0] - Modular Face Intelligence & Zepto Compliance Release
 
 ### Core Recognition Engine Fixes & Optimizations

@@ -6,11 +6,13 @@ class ComplianceOptions {
   const ComplianceOptions({
     this.requireFaceVerification = true,
     this.requireHelmet = true,
+    this.requireMotorcycle = true,
     this.requireMask = false,
     this.targetUniform = UniformPreset.zeptoPurple,
     this.customUniformColor,
     this.minUniformConfidence = 0.60,
     this.minHelmetConfidence = 0.65,
+    this.minMotorcycleConfidence = 0.65,
     this.minMaskConfidence = 0.65,
   });
 
@@ -19,6 +21,9 @@ class ComplianceOptions {
 
   /// Whether wearing a motorcycle helmet is mandatory.
   final bool requireHelmet;
+
+  /// Whether motorcycle / two-wheeler verification is mandatory.
+  final bool requireMotorcycle;
 
   /// Whether wearing a mask is mandatory (true for pandemic rules, false if face must be exposed).
   final bool requireMask;
@@ -34,6 +39,9 @@ class ComplianceOptions {
 
   /// Minimum confidence [0.0, 1.0] to confirm helmet presence.
   final double minHelmetConfidence;
+
+  /// Minimum confidence [0.0, 1.0] to confirm motorcycle / two-wheeler presence.
+  final double minMotorcycleConfidence;
 
   /// Minimum confidence [0.0, 1.0] for mask detection.
   final double minMaskConfidence;

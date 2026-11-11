@@ -46,13 +46,35 @@ class FakeFaceBiometricPlatform extends FaceBiometricPlatform {
   }
 
   @override
-  Future<FaceEnrollmentResult> enroll({required String userId}) async =>
+  Future<FaceEnrollmentResult> enroll({
+    required String userId,
+    bool? enableLiveness,
+  }) async =>
       throw UnimplementedError();
 
   @override
-  Future<FaceAuthenticationResult> authenticate(
-          {required String userId}) async =>
+  Future<FaceAuthenticationResult> authenticate({
+    required String userId,
+    bool? enableLiveness,
+  }) async =>
       throw UnimplementedError();
+
+  @override
+  Stream<Map<String, dynamic>> get detectionStream => const Stream<Map<String, dynamic>>.empty();
+
+  @override
+  Future<void> startFaceDetection() async {}
+
+  @override
+  Future<void> stopFaceDetection() async {}
+
+  @override
+  Future<void> switchModel({
+    required String? assetPath,
+    int embeddingDimension = 192,
+    String modelVersion = 'face-model-1',
+    double threshold = 0.68,
+  }) async {}
 
   @override
   Future<FaceMatchResult> compare({

@@ -1,7 +1,7 @@
 name: flutter_bio_auth_example
 description: Demo app for flutter_bio_auth.
 publish_to: none
-version: 0.2.0
+version: 0.2.1
 
 environment:
   sdk: ">=3.5.0 <4.0.0"
@@ -14,6 +14,7 @@ dependencies:
     path: ../
   permission_handler: ^11.3.1
   image_picker: ^1.1.2
+  shared_preferences: ^2.5.3
 
 dev_dependencies:
   flutter_test:

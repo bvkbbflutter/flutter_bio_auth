@@ -15,6 +15,7 @@ class FaceEnrollmentView extends StatefulWidget {
     super.key,
     required this.userId,
     this.timeout = const Duration(seconds: 45),
+    this.enableLiveness = false,
     this.onEnrolled,
     this.onError,
     this.onClose,
@@ -22,6 +23,7 @@ class FaceEnrollmentView extends StatefulWidget {
 
   final String userId;
   final Duration timeout;
+  final bool enableLiveness;
   final ValueChanged<FaceEnrollmentResult>? onEnrolled;
   final ValueChanged<String>? onError;
   final VoidCallback? onClose;
@@ -58,6 +60,7 @@ class _FaceEnrollmentViewState extends State<FaceEnrollmentView> {
     try {
       final FaceEnrollmentResult res = await FaceBiometric.enroll(
         userId: widget.userId,
+        enableLiveness: widget.enableLiveness,
       );
       if (!mounted) return;
       setState(() {

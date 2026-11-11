@@ -128,15 +128,15 @@ class LivenessSession(
     override fun cancel() {
         finished = true
     }
+}
 
-    private fun challengeInstruction(challenge: LivenessChallenge): String = when (challenge) {
-        LivenessChallenge.blink -> "Blink both eyes"
-        LivenessChallenge.smile -> "Smile"
-        LivenessChallenge.turnLeft -> "Turn your head to the left"
-        LivenessChallenge.turnRight -> "Turn your head to the right"
-        LivenessChallenge.lookUp -> "Tilt your head up"
-        LivenessChallenge.lookDown -> "Tilt your head down"
-        LivenessChallenge.moveCloser -> "Move closer to the camera"
-        LivenessChallenge.moveAway -> "Move away from the camera"
-    }
+fun challengeInstruction(challenge: LivenessChallenge): String = when (challenge) {
+    LivenessChallenge.blink -> "Blink both eyes"
+    LivenessChallenge.smile -> "Smile"
+    LivenessChallenge.turnLeft -> "Turn your head to the left"
+    LivenessChallenge.turnRight -> "Turn your head to the right"
+    LivenessChallenge.lookUp -> "Tilt your head up"
+    LivenessChallenge.lookDown -> "Tilt your head down"
+    LivenessChallenge.moveCloser -> "Move closer to the camera"
+    LivenessChallenge.moveAway -> "Move away from the camera"
 }

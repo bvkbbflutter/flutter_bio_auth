@@ -17,9 +17,9 @@ class FaceQualityAnalyzer(
     private val minimumFaceSize: Double,
     private val maximumFaceSize: Double,
     private val requireCentered: Boolean,
-    private val maxFrontalYawDegrees: Double = 32.0,
-    private val maxFrontalPitchDegrees: Double = 32.0,
-    private val centeringTolerance: Double = 0.35,
+    private val maxFrontalYawDegrees: Double = 36.0,
+    private val maxFrontalPitchDegrees: Double = 36.0,
+    private val centeringTolerance: Double = 0.40,
     private val minAcceptableBrightness: Double = 0.08,
     private val maxAcceptableBrightness: Double = 0.98,
     private val blurVarianceThreshold: Double = 4.0,
@@ -54,8 +54,8 @@ class FaceQualityAnalyzer(
             abs(centerX - 0.5) <= centeringTolerance && abs(centerY - 0.5) <= centeringTolerance
         }
 
-        val isFrontal = (detection.yawDegrees?.let { abs(it) <= maxFrontalYawDegrees } ?: false) &&
-            (detection.pitchDegrees?.let { abs(it) <= maxFrontalPitchDegrees } ?: false)
+        val isFrontal = (detection.yawDegrees?.let { abs(it) <= maxFrontalYawDegrees } ?: true) &&
+            (detection.pitchDegrees?.let { abs(it) <= maxFrontalPitchDegrees } ?: true)
 
         val isBlurry = laplacianVariance < blurVarianceThreshold
         val brightnessOk = meanBrightness in minAcceptableBrightness..maxAcceptableBrightness

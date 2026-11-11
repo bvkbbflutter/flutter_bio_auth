@@ -107,6 +107,40 @@ class _ExpressionHubPageState extends State<ExpressionHubPage> {
             subtitle: 'Guided turnaround smile challenge with animated progress',
             onTap: _openSmileChallenge,
           ),
+          const SizedBox(height: 12),
+          _buildActionCard(
+            context,
+            icon: Icons.camera_front,
+            color: Colors.purple,
+            title: 'Instant Snapshot Sentiment Analysis',
+            subtitle: 'Single-frame snapshot classification and sentiment probabilities',
+            onTap: () async {
+              final result = await FaceAI.detectExpression();
+              if (!context.mounted) return;
+              showDialog<void>(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  title: const Text('Snapshot Expression Result'),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text('Dominant: ${result.expression.name.toUpperCase()}',
+                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                      Text('Confidence: ${(result.confidence * 100).toInt()}%'),
+                      const SizedBox(height: 12),
+                      Text('Smile: ${((result.smilingProbability ?? 0.0) * 100).toInt()}%'),
+                      Text('Left Eye Open: ${((result.leftEyeOpenProbability ?? 1.0) * 100).toInt()}%'),
+                      Text('Right Eye Open: ${((result.rightEyeOpenProbability ?? 1.0) * 100).toInt()}%'),
+                    ],
+                  ),
+                  actions: <Widget>[
+                    TextButton(onPressed: () => Navigator.of(ctx).pop(), child: const Text('OK')),
+                  ],
+                ),
+              );
+            },
+          ),
         ],
       ),
     );

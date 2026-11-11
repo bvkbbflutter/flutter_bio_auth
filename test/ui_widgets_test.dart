@@ -31,8 +31,11 @@ class MockPlatform extends FaceBiometricPlatform {
       livenessCompleter.future;
 
   @override
-  Future<FaceEnrollmentResult> enroll({required String userId}) async {
-    return FaceEnrollmentResult(
+  Future<FaceEnrollmentResult> enroll({
+    required String userId,
+    bool? enableLiveness,
+  }) async {
+    return const FaceEnrollmentResult(
       success: true,
       userId: 'test',
       samplesUsed: 5,
@@ -41,17 +44,36 @@ class MockPlatform extends FaceBiometricPlatform {
   }
 
   @override
-  Future<FaceAuthenticationResult> authenticate(
-      {required String userId}) async {
+  Future<FaceAuthenticationResult> authenticate({
+    required String userId,
+    bool? enableLiveness,
+  }) async {
     return FaceAuthenticationResult(
       userId: userId,
       authenticated: true,
       similarity: 0.95,
       livenessScore: 0.92,
       antiSpoofScore: 0.98,
-      duration: Duration(seconds: 1),
+      duration: const Duration(seconds: 1),
     );
   }
+
+  @override
+  Stream<Map<String, dynamic>> get detectionStream => const Stream<Map<String, dynamic>>.empty();
+
+  @override
+  Future<void> startFaceDetection() async {}
+
+  @override
+  Future<void> stopFaceDetection() async {}
+
+  @override
+  Future<void> switchModel({
+    required String? assetPath,
+    int embeddingDimension = 192,
+    String modelVersion = 'face-model-1',
+    double threshold = 0.68,
+  }) async {}
 
   @override
   Future<FaceMatchResult> compare({

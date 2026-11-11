@@ -36,9 +36,15 @@ abstract class FaceBiometricPlatform extends PlatformInterface {
 
   Future<void> initialize(FaceBiometricConfig config);
 
-  Future<FaceEnrollmentResult> enroll({required String userId});
+  Future<FaceEnrollmentResult> enroll({
+    required String userId,
+    bool? enableLiveness,
+  });
 
-  Future<FaceAuthenticationResult> authenticate({required String userId});
+  Future<FaceAuthenticationResult> authenticate({
+    required String userId,
+    bool? enableLiveness,
+  });
 
   /// Standalone active liveness verification without requiring any AI
   /// face recognition model. Tests active challenges (blink, smile, head turns)
@@ -80,6 +86,23 @@ abstract class FaceBiometricPlatform extends PlatformInterface {
 
   /// Stream of real-time active liveness challenge progress.
   Stream<LivenessChallengeProgress> get challengeProgressStream;
+
+  /// Stream of live face detection telemetry (smiling, eye openness, pose).
+  Stream<Map<String, dynamic>> get detectionStream;
+
+  /// Starts live camera detection analysis emitting per-frame telemetry.
+  Future<void> startFaceDetection();
+
+  /// Stops live camera detection analysis.
+  Future<void> stopFaceDetection();
+
+  /// Dynamically activates a different pluggable model.
+  Future<void> switchModel({
+    required String? assetPath,
+    int embeddingDimension = 192,
+    String modelVersion = 'face-model-1',
+    double threshold = 0.68,
+  });
 }
 
 /// Default implementation backed by a [MethodChannel] +
@@ -98,12 +121,15 @@ class MethodChannelFaceBiometric extends FaceBiometricPlatform {
 
   StreamController<FaceBiometricState>? _stateStreamController;
   StreamController<LivenessChallengeProgress>? _challengeStreamController;
+  StreamController<Map<String, dynamic>>? _detectionStreamController;
 
   void _ensureStreams() {
     if (_stateStreamController != null) return;
     _stateStreamController = StreamController<FaceBiometricState>.broadcast();
     _challengeStreamController =
         StreamController<LivenessChallengeProgress>.broadcast();
+    _detectionStreamController =
+        StreamController<Map<String, dynamic>>.broadcast();
 
     _stateEventChannel.receiveBroadcastStream().listen(
       (Object? event) {
@@ -123,6 +149,11 @@ class MethodChannelFaceBiometric extends FaceBiometricPlatform {
                       event as Map<Object?, Object?>);
               _challengeStreamController?.add(progress);
             } catch (_) {}
+          }
+          if (event.containsKey('smilingProbability') ||
+              event.containsKey('hasFace') ||
+              event.containsKey('leftEyeOpenProbability')) {
+            _detectionStreamController?.add(Map<String, dynamic>.from(event));
           }
         }
       },
@@ -144,6 +175,12 @@ class MethodChannelFaceBiometric extends FaceBiometricPlatform {
     return _challengeStreamController!.stream;
   }
 
+  @override
+  Stream<Map<String, dynamic>> get detectionStream {
+    _ensureStreams();
+    return _detectionStreamController!.stream;
+  }
+
   FaceBiometricState _parseState(String raw) {
     return FaceBiometricState.values.firstWhere(
       (FaceBiometricState s) => s.name == raw,
@@ -157,10 +194,16 @@ class MethodChannelFaceBiometric extends FaceBiometricPlatform {
   }
 
   @override
-  Future<FaceEnrollmentResult> enroll({required String userId}) async {
+  Future<FaceEnrollmentResult> enroll({
+    required String userId,
+    bool? enableLiveness,
+  }) async {
     final Map<Object?, Object?> result = await _invoke(
       'enroll',
-      <String, Object?>{'userId': userId},
+      <String, Object?>{
+        'userId': userId,
+        if (enableLiveness != null) 'enableLiveness': enableLiveness,
+      },
     );
     return FaceEnrollmentResult.fromMap(result);
   }
@@ -168,12 +211,41 @@ class MethodChannelFaceBiometric extends FaceBiometricPlatform {
   @override
   Future<FaceAuthenticationResult> authenticate({
     required String userId,
+    bool? enableLiveness,
   }) async {
     final Map<Object?, Object?> result = await _invoke(
       'authenticate',
-      <String, Object?>{'userId': userId},
+      <String, Object?>{
+        'userId': userId,
+        if (enableLiveness != null) 'enableLiveness': enableLiveness,
+      },
     );
     return FaceAuthenticationResult.fromMap(result);
+  }
+
+  @override
+  Future<void> startFaceDetection() async {
+    await _invoke<void>('startFaceDetection', null);
+  }
+
+  @override
+  Future<void> stopFaceDetection() async {
+    await _invoke<void>('stopFaceDetection', null);
+  }
+
+  @override
+  Future<void> switchModel({
+    required String? assetPath,
+    int embeddingDimension = 192,
+    String modelVersion = 'face-model-1',
+    double threshold = 0.68,
+  }) async {
+    await _invoke<void>('switchModel', <String, Object?>{
+      'assetPath': assetPath,
+      'embeddingDimension': embeddingDimension,
+      'modelVersion': modelVersion,
+      'threshold': threshold,
+    });
   }
 
   @override

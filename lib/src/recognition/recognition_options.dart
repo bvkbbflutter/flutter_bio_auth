@@ -5,6 +5,7 @@ class RecognitionOptions {
     this.maxFaces = 1,
     this.extractLandmarks = true,
     this.enableQualityGate = true,
+    this.enableLiveness,
   });
 
   /// Calibrated cosine similarity threshold (default ~0.68 for MobileFaceNet).
@@ -18,4 +19,7 @@ class RecognitionOptions {
 
   /// Whether to reject excessively blurry or off-screen faces.
   final bool enableQualityGate;
+
+  /// Optional override for active liveness challenge during enrollment/authentication.
+  final bool? enableLiveness;
 }

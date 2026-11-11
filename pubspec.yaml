@@ -3,7 +3,7 @@ description: >
   Modular, AI-powered on-device face intelligence, 1:1 face recognition,
   active liveness, facial expressions, delivery partner compliance (Zepto/helmet/uniform),
   and local device biometrics for Flutter.
-version: 0.2.0
+version: 0.2.1
 
 homepage: https://github.com/bvkbbflutter/flutter_bio_auth
 repository: https://github.com/bvkbbflutter/flutter_bio_auth
@@ -19,6 +19,7 @@ dependencies:
     sdk: flutter
   plugin_platform_interface: ^2.1.8
   crypto: ^3.0.5
+  shared_preferences: ^2.5.3
 
 dev_dependencies:
   flutter_test:

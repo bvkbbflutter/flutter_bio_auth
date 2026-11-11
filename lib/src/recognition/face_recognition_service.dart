@@ -16,7 +16,10 @@ class FaceRecognitionService {
     required String userId,
     RecognitionOptions? options,
   }) {
-    return FaceBiometricPlatform.instance.enroll(userId: userId);
+    return FaceBiometricPlatform.instance.enroll(
+      userId: userId,
+      enableLiveness: options?.enableLiveness,
+    );
   }
 
   /// Verifies a captured face against the previously enrolled template of [userId].
@@ -24,7 +27,10 @@ class FaceRecognitionService {
     required String userId,
     RecognitionOptions? options,
   }) {
-    return FaceBiometricPlatform.instance.authenticate(userId: userId);
+    return FaceBiometricPlatform.instance.authenticate(
+      userId: userId,
+      enableLiveness: options?.enableLiveness,
+    );
   }
 
   /// Compares two still face images directly (JPEG/PNG bytes) through the

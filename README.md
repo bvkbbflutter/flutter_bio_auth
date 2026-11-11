@@ -34,13 +34,13 @@ Developers can use only facial expression detection, only face recognition, only
 
 ### Key Capabilities
 
-* 🛵 **Zepto / Rider Safety & Uniform Compliance**: Multi-factor shift check-in: verifies face identity, detects motorcycle helmet, checks mask status, and matches company uniform colors (Zepto Purple `#5200FF`, Swiggy, Zomato, Blinkit, or custom).
-* 👤 **1:1 Face Recognition & Verification**: Multi-frame enrollment, high-speed continuous live scanning with instant early-exit on match, direct 2-photo cosine matching, and encrypted AES-GCM on-device biometric vault.
+* 🛵 **Zepto / Rider Safety & Uniform Compliance**: Multi-factor shift check-in: verifies face identity, detects motorcycle helmet, validates motorcycle stance, checks mask status, and matches company uniform colors (Zepto Purple `#5200FF`, Swiggy, Zomato, Blinkit, or custom) using HSV color tolerance with granular failure diagnostics.
+* 👤 **1:1 Face Recognition & Verification**: Fast multi-frame enrollment with automatic unique ID generation (`USR_<timestamp>_<random>`), high-speed continuous live scanning with green detection reticle, instant early-exit on match, direct 2-photo cosine matching, and encrypted AES-GCM on-device biometric vault.
 * 🛡️ **Active & Passive Liveness**: Interactive challenge sequencer (Blink, Turn Left, Turn Right, Smile) and presentation attack protection with zero bundled AI models needed.
-* 😊 **Facial Expression & Sentiment AI**: Real-time emotion streaming, continuous smile confidence meter, and winking/blinking classification.
+* 😊 **Facial Expression & Sentiment AI**: Real-time native ML Kit telemetry streaming, continuous smile confidence meter, and winking/blinking classification with interactive mood gauges.
 * 📱 **Local Device Biometrics**: Native Android `BiometricPrompt` and Apple `Face ID` / `Touch ID` / `LocalAuthentication` with typed results (`success`, `cancelled`, `lockedOut`, `notEnrolled`).
-* ⚙️ **Pluggable TFLite Model Architecture**: Dedicated `FaceModelManager` supporting bundled assets, downloaded local files, SHA-256 verification, and hardware delegate benchmarking (CPU, NNAPI, GPU).
-* 🖼️ **Turnkey UI Widgets**: Drop-in widgets for delivery check-in, expression gauges, liveness challenges, smile scanners, and face enrollment.
+* ⚙️ **Pluggable TFLite Model Architecture**: Dedicated `FaceModelManager` supporting bundled assets, downloaded local files, persistent model selection across app restarts, SHA-256 verification, and hardware delegate benchmarking (CPU, NNAPI, GPU).
+* 🖼️ **Turnkey UI Widgets**: Drop-in widgets for delivery check-in, expression gauges, liveness challenges, smile scanners, and face enrollment with vibrant green detection indicators.
 
 ---
 

@@ -54,18 +54,28 @@ class FaceBiometric {
   /// Runs the full enrollment flow (camera → face quality → liveness →
   /// multi-frame embedding aggregation → encryption → storage) for
   /// [userId]. Presents its own native UI/camera session.
-  static Future<FaceEnrollmentResult> enroll({required String userId}) {
+  static Future<FaceEnrollmentResult> enroll({
+    required String userId,
+    bool? enableLiveness,
+  }) {
     _checkInitialized();
-    return FaceBiometricPlatform.instance.enroll(userId: userId);
+    return FaceBiometricPlatform.instance.enroll(
+      userId: userId,
+      enableLiveness: enableLiveness,
+    );
   }
 
   /// Runs the full 1:1 authentication flow for [userId] against their
   /// previously enrolled template.
   static Future<FaceAuthenticationResult> authenticate({
     required String userId,
+    bool? enableLiveness,
   }) {
     _checkInitialized();
-    return FaceBiometricPlatform.instance.authenticate(userId: userId);
+    return FaceBiometricPlatform.instance.authenticate(
+      userId: userId,
+      enableLiveness: enableLiveness,
+    );
   }
 
   /// Runs standalone active liveness verification without requiring any AI

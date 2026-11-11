@@ -11,6 +11,7 @@ class DeliveryCompliancePage extends StatefulWidget {
 class _DeliveryCompliancePageState extends State<DeliveryCompliancePage> {
   UniformPreset _selectedPreset = UniformPreset.zeptoPurple;
   bool _requireHelmet = true;
+  bool _requireMotorcycle = true;
   bool _requireFace = true;
   bool _requireMask = false;
 
@@ -21,6 +22,7 @@ class _DeliveryCompliancePageState extends State<DeliveryCompliancePage> {
           options: ComplianceOptions(
             targetUniform: _selectedPreset,
             requireHelmet: _requireHelmet,
+            requireMotorcycle: _requireMotorcycle,
             requireFaceVerification: _requireFace,
             requireMask: _requireMask,
           ),
@@ -42,26 +44,58 @@ class _DeliveryCompliancePageState extends State<DeliveryCompliancePage> {
           icon: Icon(
             result.isReady ? Icons.check_circle : Icons.warning_amber_rounded,
             size: 48,
-            color: result.isReady ? Colors.green : Colors.orange,
+            color: result.isReady ? const Color(0xFF00E676) : Colors.orange,
           ),
           title: Text(
             result.isReady ? 'Shift Check-In Approved!' : 'Inspection Incomplete',
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                result.statusMessage,
-                style: const TextStyle(fontSize: 15),
-              ),
-              const SizedBox(height: 16),
-              _buildDetailRow('Face Identity:', result.faceVerified ? 'Verified' : 'Mismatch'),
-              _buildDetailRow('Helmet:', result.isWearingHelmet ? 'Detected (Compliant)' : 'Missing'),
-              _buildDetailRow('Uniform:', result.isWearingUniform ? '${_selectedPreset.displayName} OK' : 'Missing'),
-              _buildDetailRow('Mask:', result.isWearingMask ? 'Wearing Mask' : 'No Mask'),
-            ],
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  result.statusMessage,
+                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                ),
+                const Divider(height: 24),
+                ...result.checks.map((chk) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Icon(
+                          chk.passed ? Icons.check_circle : Icons.cancel,
+                          size: 16,
+                          color: chk.passed ? const Color(0xFF00E676) : Colors.redAccent,
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(
+                                chk.name,
+                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                              ),
+                              Text(
+                                chk.reason,
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  color: chk.passed ? Colors.grey.shade700 : Colors.red.shade700,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }),
+              ],
+            ),
           ),
           actions: <Widget>[
             FilledButton(
@@ -71,19 +105,6 @@ class _DeliveryCompliancePageState extends State<DeliveryCompliancePage> {
           ],
         );
       },
-    );
-  }
-
-  Widget _buildDetailRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Text(label, style: const TextStyle(color: Colors.grey)),
-          Text(value, style: const TextStyle(fontWeight: FontWeight.bold)),
-        ],
-      ),
     );
   }
 
@@ -200,6 +221,12 @@ class _DeliveryCompliancePageState extends State<DeliveryCompliancePage> {
             subtitle: const Text('Upper head & chin-strap detection'),
             value: _requireHelmet,
             onChanged: (val) => setState(() => _requireHelmet = val),
+          ),
+          SwitchListTile(
+            title: const Text('Require Motorcycle / Two-Wheeler Context'),
+            subtitle: const Text('Rider vehicle presence and posture validation'),
+            value: _requireMotorcycle,
+            onChanged: (val) => setState(() => _requireMotorcycle = val),
           ),
           SwitchListTile(
             title: const Text('Require 1:1 Face Verification'),

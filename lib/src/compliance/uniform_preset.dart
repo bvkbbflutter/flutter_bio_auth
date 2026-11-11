@@ -51,6 +51,39 @@ extension UniformPresetExtension on UniformPreset {
     }
   }
 
+  /// Hex representation of the target uniform color.
+  String get primaryColorHex {
+    switch (this) {
+      case UniformPreset.zeptoPurple:
+        return '#5200FF';
+      case UniformPreset.swiggyOrange:
+        return '#FC8019';
+      case UniformPreset.zomatoRed:
+        return '#CB202D';
+      case UniformPreset.blinkitYellow:
+        return '#F4C430';
+      case UniformPreset.custom:
+        return '#2196F3';
+    }
+  }
+
+  /// Accurately checks whether an observed clothing color matches this uniform preset.
+  bool matchesColor(Color observedColor, {double tolerance = 0.25}) {
+    final HSVColor hsv = HSVColor.fromColor(observedColor);
+    // Dark black, white, or washed-out grey clothing cannot match brand colored uniforms
+    if (hsv.saturation < 0.25 || hsv.value < 0.15) {
+      return false;
+    }
+    final List<double> range = targetHueRange;
+    final double h = hsv.hue;
+    if (range[0] <= range[1]) {
+      return h >= (range[0] - 10.0) && h <= (range[1] + 10.0);
+    } else {
+      // Wraps around 360 degrees (e.g. Red)
+      return h >= (range[0] - 10.0) || h <= (range[1] + 10.0);
+    }
+  }
+
   /// Target Hue range in HSV color space [0..360].
   List<double> get targetHueRange {
     switch (this) {

@@ -232,7 +232,7 @@ class _ChallengeCard extends StatelessWidget {
       elevation: 4,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
-        side: const BorderSide(color: Colors.amberAccent, width: 1.5),
+        side: const BorderSide(color: Color(0xFF00E676), width: 1.5),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -242,8 +242,8 @@ class _ChallengeCard extends StatelessWidget {
             Row(
               children: <Widget>[
                 CircleAvatar(
-                  backgroundColor: Colors.amberAccent.withOpacity(0.2),
-                  child: Icon(icon, color: Colors.amberAccent, size: 24),
+                  backgroundColor: const Color(0xFF00E676).withOpacity(0.2),
+                  child: Icon(icon, color: const Color(0xFF00E676), size: 24),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -275,7 +275,7 @@ class _ChallengeCard extends StatelessWidget {
                 value: progress.progress.clamp(0.0, 1.0),
                 minHeight: 6,
                 backgroundColor: Colors.white12,
-                valueColor: const AlwaysStoppedAnimation<Color>(Colors.amberAccent),
+                valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF00E676)),
               ),
             ),
           ],
@@ -351,34 +351,34 @@ class _StatusBadge extends StatelessWidget {
         color = Colors.cyanAccent;
         break;
       case FaceBiometricState.faceDetected:
-        label = 'Face Detected';
-        color = Colors.greenAccent;
+        label = 'Face Detected — Ready';
+        color = const Color(0xFF00E676);
         break;
       case FaceBiometricState.validatingFace:
-        label = 'Hold steady…';
-        color = Colors.greenAccent;
+        label = 'Face Detected — Capturing…';
+        color = const Color(0xFF00E676);
         break;
       case FaceBiometricState.runningLiveness:
       case FaceBiometricState.challengeInProgress:
-        label = 'Performing Challenge…';
-        color = Colors.amberAccent;
+        label = 'Face Detected — Follow Prompt';
+        color = const Color(0xFF00E676);
         break;
       case FaceBiometricState.generatingEmbedding:
-        label = 'Processing Embedding…';
-        color = Colors.lightBlueAccent;
+        label = 'Face Detected — Generating Template…';
+        color = const Color(0xFF00E676);
         break;
       case FaceBiometricState.checkingAntiSpoof:
         label = 'Checking Anti-Spoof…';
-        color = Colors.lightBlueAccent;
+        color = const Color(0xFF00E676);
         break;
       case FaceBiometricState.matchingFace:
       case FaceBiometricState.authenticating:
         label = 'Matching Face…';
-        color = Colors.lightBlueAccent;
+        color = const Color(0xFF00E676);
         break;
       case FaceBiometricState.success:
         label = 'Success!';
-        color = Colors.greenAccent;
+        color = const Color(0xFF00E676);
         break;
       case FaceBiometricState.failed:
         label = 'Verification Failed';

@@ -162,6 +162,9 @@ class FaceBiometricPlugin :
                 "getEnrolledUsers" -> result.success(storageOrThrow().getUsers())
                 "clearAllEnrollments" -> { storageOrThrow().clear(); result.success(null) }
                 "authenticateWithDeviceBiometrics" -> handleDeviceBiometrics(call, result)
+                "startFaceDetection" -> handleStartFaceDetection(call, result)
+                "stopFaceDetection" -> handleStopFaceDetection(result)
+                "switchModel" -> handleSwitchModel(call, result)
                 "retry" -> { activeSession?.reset(); result.success(null) }
                 "dispose" -> { handleDispose(); result.success(null) }
                 else -> result.notImplemented()
@@ -232,6 +235,7 @@ class FaceBiometricPlugin :
 
     private fun handleEnroll(call: MethodCall, result: MethodChannel.Result) {
         val userId = call.argument<String>("userId")!!
+        val reqLiveness = call.argument<Boolean>("enableLiveness") ?: enableLiveness
         val owner = lifecycleOwner ?: return result.error(
             FaceBiometricErrorCode.platformError.name, "No activity attached.", null,
         )
@@ -251,10 +255,11 @@ class FaceBiometricPlugin :
             requireSingleFace = requireSingleFace,
             requiredSamples = 5,
             sessionTimeoutMillis = sessionTimeoutMillis,
-            enableLiveness = enableLiveness,
+            enableLiveness = reqLiveness,
             livenessSequence = ChallengeEngine().buildSequence(challengePool, randomizeChallenges),
             challengeTimeoutMillis = challengeTimeoutMillis,
             emitState = ::emitState,
+            emitChallengeProgress = ::emitChallengeProgress,
             onComplete = { mapResult -> result.success(mapResult) },
             onError = { e -> result.error(e.errorCode.name, e.message, null) },
         )
@@ -263,6 +268,7 @@ class FaceBiometricPlugin :
 
     private fun handleAuthenticate(call: MethodCall, result: MethodChannel.Result) {
         val userId = call.argument<String>("userId")!!
+        val reqLiveness = call.argument<Boolean>("enableLiveness") ?: enableLiveness
         val owner = lifecycleOwner ?: return result.error(
             FaceBiometricErrorCode.platformError.name, "No activity attached.", null,
         )
@@ -293,7 +299,7 @@ class FaceBiometricPlugin :
                 recognitionThreshold = recognitionThreshold,
                 livenessThreshold = livenessThreshold,
                 antiSpoofThreshold = antiSpoofThreshold,
-                requireLiveness = enableLiveness,
+                requireLiveness = reqLiveness,
                 requireAntiSpoof = enableAntiSpoofing,
             ),
             minimumFaceSize = minimumFaceSize,
@@ -301,14 +307,88 @@ class FaceBiometricPlugin :
             requireCenteredFace = requireCenteredFace,
             requireSingleFace = requireSingleFace,
             sessionTimeoutMillis = sessionTimeoutMillis,
-            enableLiveness = enableLiveness,
+            enableLiveness = reqLiveness,
             livenessSequence = ChallengeEngine().buildSequence(challengePool, randomizeChallenges),
             challengeTimeoutMillis = challengeTimeoutMillis,
             emitState = ::emitState,
+            emitChallengeProgress = ::emitChallengeProgress,
             onComplete = { mapResult -> result.success(mapResult) },
             onError = { e -> result.error(e.errorCode.name, e.message, null) },
         )
         runSession(owner, session)
+    }
+
+    private fun handleStartFaceDetection(call: MethodCall, result: MethodChannel.Result) {
+        val owner = lifecycleOwner ?: return result.error(
+            FaceBiometricErrorCode.platformError.name, "No activity attached.", null,
+        )
+        if (!hasCameraPermission()) {
+            emitState(StateName.PERMISSION_DENIED)
+            return result.error(FaceBiometricErrorCode.cameraPermissionDenied.name, "Camera permission not granted.", null)
+        }
+
+        activeSession?.cancel()
+        val manager = CameraManager(binding.applicationContext, owner)
+        cameraManager = manager
+        activeView?.attachCameraManager(manager)
+        manager.requiresBitmapProvider = { false }
+        manager.onFrame = { _, detection, _ ->
+            val payload = mapOf(
+                "state" to if (detection.hasNoFace) StateName.DETECTING_FACE.wireValue else StateName.FACE_DETECTED.wireValue,
+                "smilingProbability" to (detection.smilingProbability ?: 0.0),
+                "leftEyeOpenProbability" to (detection.leftEyeOpenProbability ?: 0.0),
+                "rightEyeOpenProbability" to (detection.rightEyeOpenProbability ?: 0.0),
+                "yawDegrees" to (detection.yawDegrees ?: 0.0),
+                "pitchDegrees" to (detection.pitchDegrees ?: 0.0),
+                "rollDegrees" to (detection.rollDegrees ?: 0.0),
+                "faceCount" to detection.faceCount,
+                "hasFace" to !detection.hasNoFace,
+            )
+            val runnable = Runnable { eventSink?.success(payload) }
+            activity?.runOnUiThread(runnable) ?: runnable.run()
+        }
+        manager.onError = {
+            emitState(StateName.ERROR)
+        }
+        emitState(StateName.INITIALIZING)
+        manager.start(
+            onReady = {
+                activeView?.attachCameraManager(manager)
+                emitState(StateName.CAMERA_READY)
+            },
+            onFailure = {
+                emitState(StateName.ERROR)
+            },
+        )
+        result.success(null)
+    }
+
+    private fun handleStopFaceDetection(result: MethodChannel.Result) {
+        cameraManager?.stop()
+        emitState(StateName.IDLE)
+        result.success(null)
+    }
+
+    private fun handleSwitchModel(call: MethodCall, result: MethodChannel.Result) {
+        val assetPath = call.argument<String>("assetPath")
+        val dim = (call.argument<Number>("embeddingDimension"))?.toInt() ?: 192
+        val version = call.argument<String>("modelVersion") ?: "face-model-1"
+        val threshold = (call.argument<Number>("threshold"))?.toDouble() ?: recognitionThreshold
+
+        embeddingDimension = dim
+        modelVersion = version
+        recognitionThreshold = threshold
+        embeddingModelAssetPath = assetPath
+
+        val assetManager = binding.applicationContext.assets
+        val resolvedPath = assetPath?.let { binding.flutterAssets.getAssetFilePathBySubpath(it) }
+        embeddingEngine?.close()
+        embeddingEngine = if (resolvedPath != null) {
+            TFLiteFaceEmbeddingEngine(assetManager, resolvedPath, modelVersion, embeddingDimension)
+        } else {
+            UnavailableFaceEmbeddingEngine(modelVersion, embeddingDimension)
+        }
+        result.success(true)
     }
 
     private fun handleVerifyLiveness(call: MethodCall, result: MethodChannel.Result) {

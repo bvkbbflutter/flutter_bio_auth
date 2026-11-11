@@ -18,23 +18,19 @@ class ModelSource {
   final String? filePath;
   final String? url;
 
+  String? get path => assetPath ?? filePath ?? url;
+
   /// Loads model bundled within Flutter application assets.
-  factory ModelSource.asset(String path) => ModelSource._(
-        type: ModelSourceType.asset,
-        assetPath: path,
-      );
+  const ModelSource.asset(String path)
+      : this._(type: ModelSourceType.asset, assetPath: path);
 
   /// Loads model from local on-device file storage (e.g. app support dir).
-  factory ModelSource.file(String path) => ModelSource._(
-        type: ModelSourceType.file,
-        filePath: path,
-      );
+  const ModelSource.file(String path)
+      : this._(type: ModelSourceType.file, filePath: path);
 
   /// Downloads model securely over network with checksum verification.
-  factory ModelSource.network(String url) => ModelSource._(
-        type: ModelSourceType.network,
-        url: url,
-      );
+  const ModelSource.network(String url)
+      : this._(type: ModelSourceType.network, url: url);
 
   @override
   String toString() {

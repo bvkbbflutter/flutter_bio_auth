@@ -65,6 +65,7 @@ class FaceAI {
     FaceAIConfig config = const FaceAIConfig(),
   }) async {
     _config = config;
+    await models.initPersistence();
     await FaceBiometric.initialize(config: config.toBiometricConfig());
     _initialized = true;
   }

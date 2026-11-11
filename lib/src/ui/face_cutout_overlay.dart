@@ -54,17 +54,15 @@ class FaceCutoutOverlay extends StatelessWidget {
         return Colors.cyanAccent;
       case FaceBiometricState.faceDetected:
       case FaceBiometricState.validatingFace:
-        return Colors.greenAccent;
       case FaceBiometricState.runningLiveness:
       case FaceBiometricState.challengeInProgress:
-        return Colors.amberAccent;
       case FaceBiometricState.generatingEmbedding:
       case FaceBiometricState.checkingAntiSpoof:
       case FaceBiometricState.matchingFace:
       case FaceBiometricState.authenticating:
-        return Colors.lightBlueAccent;
       case FaceBiometricState.success:
-        return Colors.greenAccent;
+        // Always display a vibrant green indicator when a face is detected
+        return const Color(0xFF00E676);
       case FaceBiometricState.failed:
       case FaceBiometricState.timeout:
       case FaceBiometricState.permissionDenied:

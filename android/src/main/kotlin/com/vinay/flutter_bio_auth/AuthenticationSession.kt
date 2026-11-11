@@ -43,6 +43,7 @@ class EnrollmentSession(
     private val livenessSequence: List<LivenessChallenge>,
     private val challengeTimeoutMillis: Long,
     private val emitState: (StateName) -> Unit,
+    private val emitChallengeProgress: ((LivenessChallenge, String, Double, Double, Boolean, Boolean) -> Unit)? = null,
     private val onComplete: (Map<String, Any?>) -> Unit,
     private val onError: (BiometricException) -> Unit,
 ) : SessionRunner {
@@ -76,7 +77,28 @@ class EnrollmentSession(
 
         if (!livenessDone) {
             emitState(StateName.RUNNING_LIVENESS)
+            val current = liveness.currentChallenge ?: run {
+                if (liveness.isFinished) {
+                    val result = liveness.finish()
+                    if (!result.passed) {
+                        return complete(false, capturedEmbeddings.size, FaceAuthenticationFailureReason.livenessFailed)
+                    }
+                    livenessDone = true
+                    emitState(StateName.FACE_DETECTED)
+                }
+                return
+            }
             val outcome = liveness.onFrame(smoothed)
+            if (outcome != null) {
+                emitChallengeProgress?.invoke(
+                    current,
+                    challengeInstruction(current),
+                    outcome.progress,
+                    outcome.confidence,
+                    outcome.completed,
+                    outcome.timedOut,
+                )
+            }
             if (outcome?.timedOut == true && System.currentTimeMillis() - startedAt >= sessionTimeoutMillis) {
                 return complete(false, capturedEmbeddings.size, FaceAuthenticationFailureReason.challengeTimeout)
             }
@@ -86,6 +108,7 @@ class EnrollmentSession(
                     return complete(false, capturedEmbeddings.size, FaceAuthenticationFailureReason.livenessFailed)
                 }
                 livenessDone = true
+                emitState(StateName.FACE_DETECTED)
             } else {
                 return // still working through challenges before capturing samples
             }
@@ -219,6 +242,7 @@ class AuthenticationSession(
     private val livenessSequence: List<LivenessChallenge>,
     private val challengeTimeoutMillis: Long,
     private val emitState: (StateName) -> Unit,
+    private val emitChallengeProgress: ((LivenessChallenge, String, Double, Double, Boolean, Boolean) -> Unit)? = null,
     private val onComplete: (Map<String, Any?>) -> Unit,
     private val onError: (BiometricException) -> Unit,
 ) : SessionRunner {
@@ -251,7 +275,30 @@ class AuthenticationSession(
 
         if (!livenessDone) {
             emitState(StateName.RUNNING_LIVENESS)
+            val current = liveness.currentChallenge ?: run {
+                if (liveness.isFinished) {
+                    val result = liveness.finish()
+                    livenessPassed = result.passed
+                    livenessScore = result.overallScore
+                    livenessDone = true
+                    if (!result.passed) {
+                        return complete(makeFailure(FaceAuthenticationFailureReason.livenessFailed))
+                    }
+                    emitState(StateName.FACE_DETECTED)
+                }
+                return
+            }
             val outcome = liveness.onFrame(smoothed)
+            if (outcome != null) {
+                emitChallengeProgress?.invoke(
+                    current,
+                    challengeInstruction(current),
+                    outcome.progress,
+                    outcome.confidence,
+                    outcome.completed,
+                    outcome.timedOut,
+                )
+            }
             if (outcome?.timedOut == true && System.currentTimeMillis() - startedAt >= sessionTimeoutMillis) {
                 return complete(makeFailure(FaceAuthenticationFailureReason.challengeTimeout))
             }
@@ -263,6 +310,7 @@ class AuthenticationSession(
                 if (!result.passed) {
                     return complete(makeFailure(FaceAuthenticationFailureReason.livenessFailed))
                 }
+                emitState(StateName.FACE_DETECTED)
             } else {
                 return
             }
