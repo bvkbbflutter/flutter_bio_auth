@@ -56,8 +56,12 @@ class FaceAlignment(private val outputSize: Int = 112) {
 
         val dx = (imgRightEye.first - imgLeftEye.first).toDouble()
         val dy = (imgRightEye.second - imgLeftEye.second).toDouble()
-        var angleDegrees = Math.toDegrees(atan2(dy, dx))
-        if (kotlin.math.abs(angleDegrees) > 45.0) {
+        var angleDegrees = if (dx > boxWidth * 0.1 && kotlin.math.abs(dy) < boxHeight * 0.4) {
+            Math.toDegrees(atan2(dy, dx))
+        } else {
+            0.0
+        }
+        if (kotlin.math.abs(angleDegrees) > 40.0) {
             angleDegrees = 0.0
         }
 
@@ -155,7 +159,7 @@ class FaceAlignment(private val outputSize: Int = 112) {
         if (sampleBitmap != bitmap) {
             sampleBitmap.recycle()
         }
-        val variance = if (count > 0) (lapSumSq / count) * 255.0 * 255.0 / 4.0 else 0.0
+        val variance = if (count > 0) (lapSumSq / count) * 255.0 * 255.0 else 0.0
         return Pair(variance, mean)
     }
 }

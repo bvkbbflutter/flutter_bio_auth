@@ -6,7 +6,7 @@ public class FaceBiometricPlugin: NSObject, FlutterPlugin, FlutterStreamHandler 
     private var eventSink: FlutterEventSink?
 
     // Configuration.
-    private var recognitionThreshold = 0.82
+    private var recognitionThreshold = 0.68
     private var livenessThreshold = 0.80
     private var antiSpoofThreshold = 0.80
     private var enableLiveness = true

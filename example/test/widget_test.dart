@@ -5,7 +5,8 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
-import 'package:flutter_bio_auth_example/main.dart';
+// ignore_for_file: avoid_relative_lib_imports
+import '../lib/main.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

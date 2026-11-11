@@ -231,6 +231,9 @@ class AuthenticationSession(
     private var livenessScore = if (enableLiveness) 0.0 else 1.0
     private var livenessPassed = !enableLiveness
     private var finished = false
+    private var bestSimilarity = 0.0
+    private var matchingAttempts = 0
+    private val maxMatchingAttempts = 20
 
     override val requiresBitmap: Boolean get() = livenessDone
 
@@ -305,19 +308,44 @@ class AuthenticationSession(
             emitState(StateName.AUTHENTICATING)
             val decision = authenticationEngine.decide(similarity, livenessPassed, livenessScore, antiSpoofResult)
 
-            complete(
-                mapOf(
-                    "authenticated" to decision.authenticated,
-                    "userId" to userId,
-                    "similarity" to decision.similarity,
-                    "livenessScore" to decision.livenessScore,
-                    "antiSpoofScore" to decision.antiSpoofScore,
-                    "durationMs" to (System.currentTimeMillis() - startedAt),
-                    "failureReason" to decision.failureReason?.name,
-                ),
-            )
+            bestSimilarity = maxOf(bestSimilarity, similarity)
+            matchingAttempts++
+
+            if (decision.authenticated) {
+                // Early exit on definitive match! Instant authentication.
+                complete(
+                    mapOf(
+                        "authenticated" to true,
+                        "userId" to userId,
+                        "similarity" to decision.similarity,
+                        "livenessScore" to decision.livenessScore,
+                        "antiSpoofScore" to decision.antiSpoofScore,
+                        "durationMs" to (System.currentTimeMillis() - startedAt),
+                        "failureReason" to null,
+                    ),
+                )
+            } else if (matchingAttempts >= maxMatchingAttempts || System.currentTimeMillis() - startedAt >= sessionTimeoutMillis) {
+                // Only fail after giving the user enough frames to present their face
+                complete(
+                    mapOf(
+                        "authenticated" to false,
+                        "userId" to userId,
+                        "similarity" to bestSimilarity,
+                        "livenessScore" to decision.livenessScore,
+                        "antiSpoofScore" to decision.antiSpoofScore,
+                        "durationMs" to (System.currentTimeMillis() - startedAt),
+                        "failureReason" to (decision.failureReason?.name ?: FaceAuthenticationFailureReason.faceMismatch.name),
+                    ),
+                )
+            } else {
+                // Continue scanning next frame smoothly
+                emitState(StateName.VALIDATING_FACE)
+            }
         } catch (e: BiometricException) {
-            return complete(makeFailure(FaceAuthenticationFailureReason.unknown))
+            matchingAttempts++
+            if (matchingAttempts >= maxMatchingAttempts) {
+                return complete(makeFailure(FaceAuthenticationFailureReason.unknown))
+            }
         }
     }
 
@@ -346,6 +374,8 @@ class AuthenticationSession(
 
     override fun reset() {
         finished = false
+        matchingAttempts = 0
+        bestSimilarity = 0.0
         tracker.reset()
         liveness = LivenessEngine(livenessSequence, challengeTimeoutMillis)
         livenessDone = !enableLiveness

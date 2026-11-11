@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bio_auth/flutter_bio_auth.dart';
 
-import 'authentication_page.dart';
-import 'compare_page.dart';
+import 'delivery_compliance_page.dart';
 import 'device_biometrics_page.dart';
-import 'enrolled_users_page.dart';
-import 'enrollment_page.dart';
+import 'expression_hub_page.dart';
+import 'face_recognition_hub_page.dart';
 import 'liveness_page.dart';
-import 'smile_page.dart';
+import 'models_diagnostics_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -27,21 +26,26 @@ class _HomePageState extends State<HomePage> {
 
   void _refresh() {
     setState(() {
-      _enrolledUsersFuture = FaceBiometric.getEnrolledUsers();
+      _enrolledUsersFuture = FaceAI.recognition.getEnrolledUsers();
     });
+  }
+
+  void _navigate(Widget page) async {
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(builder: (context) => page),
+    );
+    _refresh();
   }
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-
     return Scaffold(
       appBar: AppBar(
         title: const Row(
           children: <Widget>[
-            Icon(Icons.shield_outlined, size: 26),
+            Icon(Icons.auto_awesome, size: 24, color: Color(0xFF5200FF)),
             SizedBox(width: 10),
-            Text('Face Biometrics Demo',
+            Text('Face Intelligence SDK',
                 style: TextStyle(fontWeight: FontWeight.bold)),
           ],
         ),
@@ -58,166 +62,154 @@ class _HomePageState extends State<HomePage> {
         child: ListView(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           children: <Widget>[
-            // Status Card
-            FutureBuilder<List<String>>(
-              future: _enrolledUsersFuture,
-              builder:
-                  (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
-                final int count = snapshot.data?.length ?? 0;
-                return Card(
-                  elevation: 0,
-                  color: theme.colorScheme.primaryContainer.withOpacity(0.35),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                    side: BorderSide(
-                        color: theme.colorScheme.primary.withOpacity(0.2)),
+            // SDK Overview Header Card
+            Container(
+              padding: const EdgeInsets.all(18),
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: <Color>[Color(0xFF2C3E50), Color(0xFF4CA1AF)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: const <BoxShadow>[
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 10,
+                    offset: Offset(0, 4),
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      children: <Widget>[
-                        Row(
-                          children: <Widget>[
-                            CircleAvatar(
-                              backgroundColor:
-                                  theme.colorScheme.primary.withOpacity(0.15),
-                              radius: 24,
-                              child: Icon(Icons.fingerprint,
-                                  color: theme.colorScheme.primary, size: 28),
-                            ),
-                            const SizedBox(width: 14),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Text(
-                                    '$count User(s) Enrolled',
-                                    style: theme.textTheme.titleMedium
-                                        ?.copyWith(fontWeight: FontWeight.bold),
-                                  ),
-                                  Text(
-                                    'Encrypted AES-GCM On-Device Storage',
-                                    style: theme.textTheme.bodySmall?.copyWith(
-                                        color: theme.colorScheme.outline),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 5),
-                              decoration: BoxDecoration(
-                                color: Colors.green.withOpacity(0.15),
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(
-                                    color: Colors.green.withOpacity(0.4)),
-                              ),
-                              child: const Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  Icon(Icons.check_circle,
-                                      color: Colors.green, size: 14),
-                                  SizedBox(width: 4),
-                                  Text(
-                                    'Ready',
-                                    style: TextStyle(
-                                        color: Colors.green,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 12),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  const Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text(
+                        'Modular AI Face Intelligence',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
                         ),
-                      ],
-                    ),
+                      ),
+                      Chip(
+                        label: Text('v0.2.0',
+                            style: TextStyle(fontSize: 11, color: Colors.white)),
+                        backgroundColor: Colors.white24,
+                        padding: EdgeInsets.zero,
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                    ],
                   ),
-                );
-              },
+                  const SizedBox(height: 6),
+                  const Text(
+                    'One Flutter plugin · Multiple AI models · Independent subsystems · Zero backend needed',
+                    style: TextStyle(color: Colors.white70, fontSize: 13),
+                  ),
+                  const SizedBox(height: 14),
+                  FutureBuilder<List<String>>(
+                    future: _enrolledUsersFuture,
+                    builder: (context, snapshot) {
+                      final count = snapshot.data?.length ?? 0;
+                      return Row(
+                        children: <Widget>[
+                          const Icon(Icons.shield_outlined,
+                              color: Colors.greenAccent, size: 16),
+                          const SizedBox(width: 6),
+                          Text(
+                            '$count Enrolled Identities in Vault',
+                            style: const TextStyle(
+                              color: Colors.greenAccent,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 13,
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 20),
 
-            // Section 1: Non-AI Native Features
-            _SectionHeader(
-              title: 'Native & Non-AI Biometrics',
-              badge: 'Zero Models Required',
-              badgeColor: theme.colorScheme.primary,
-            ),
-            const SizedBox(height: 10),
-            _FeatureCard(
-              icon: Icons.face_retouching_natural,
-              iconColor: Colors.teal,
-              title: 'Active Liveness Verification',
+            // Section 1: Zepto / Delivery Compliance Hub (Highlighted)
+            _buildSectionTitle('DELIVERY PARTNER AI (ZEPTO / RIDER)'),
+            _buildHubCard(
+              icon: Icons.two_wheeler,
+              accentColor: const Color(0xFF5200FF),
+              title: '🛵 Zepto / Rider Safety & Uniform Hub',
               subtitle:
-                  'Interactive challenge-response (Blink, Turn, Smile) via native ML Kit / Vision',
-              highlightChip: 'Feature A',
-              onTap: () => _push(const LivenessPage()),
+                  'Multi-factor shift check-in: Face match, Helmet detection, Mask check, and Zepto Purple Uniform verification.',
+              badge: 'Specialized',
+              onTap: () => _navigate(const DeliveryCompliancePage()),
             ),
-            const SizedBox(height: 8),
-            _FeatureCard(
-              icon: Icons.security,
-              iconColor: Colors.deepPurple,
-              title: 'Device Biometrics Auth',
-              subtitle:
-                  'Authenticate using native OS prompt (Android BiometricPrompt & iOS LocalAuth)',
-              highlightChip: 'System Dialog',
-              onTap: () => _push(const DeviceBiometricsPage()),
-            ),
-            const SizedBox(height: 8),
-            _FeatureCard(
-              icon: Icons.sentiment_very_satisfied,
-              iconColor: Colors.amber.shade700,
-              title: 'Smile to Enter Happy Page',
-              subtitle:
-                  'Click to trigger smile detection — automatically enters Happy Page when smiled',
-              highlightChip: 'On-Click Smile',
-              onTap: () => _push(const SmilePage()),
-            ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
 
-            // Section 2: AI Face Recognition Pipeline
-            const _SectionHeader(
-              title: 'AI Face Recognition Pipeline',
-              badge: 'MobileFaceNet 112×112',
-              badgeColor: Colors.indigo,
-            ),
-            const SizedBox(height: 10),
-            _FeatureCard(
-              icon: Icons.person_add_alt_1,
-              iconColor: Colors.blue,
-              title: 'Enroll Face',
+            // Section 2: Recognition & Identity Vault
+            _buildSectionTitle('FACE RECOGNITION & BIOMETRIC VAULT'),
+            _buildHubCard(
+              icon: Icons.fingerprint,
+              accentColor: Colors.indigo,
+              title: '👤 Face Recognition Hub',
               subtitle:
-                  'Capture 5 quality samples, eye alignment, normalize & store encrypted template',
-              onTap: () => _push(const EnrollmentPage()),
+                  '1:1 Live Verification, Template Enrollment, Direct 2-Photo Cosine Matching, and Enrolled Identities Manager.',
+              badge: 'Model-Driven',
+              onTap: () => _navigate(const FaceRecognitionHubPage()),
             ),
-            const SizedBox(height: 8),
-            _FeatureCard(
-              icon: Icons.verified_user,
-              iconColor: Colors.green,
-              title: 'In-App Face Authentication',
+            const SizedBox(height: 16),
+
+            // Section 3: Expression & Sentiment AI
+            _buildSectionTitle('FACIAL EXPRESSIONS & MOOD AI'),
+            _buildHubCard(
+              icon: Icons.sentiment_very_satisfied,
+              accentColor: Colors.pink,
+              title: '😊 Facial Expression & Mood Hub',
               subtitle:
-                  'Camera scan with liveness check & face recognition — ZERO native OS dialogs',
-              highlightChip: 'No OS Dialog',
-              onTap: () => _push(const AuthenticationPage()),
+                  'Real-time emotion stream, continuous smile confidence meter, and winking/blinking analytics.',
+              badge: 'Real-Time',
+              onTap: () => _navigate(const ExpressionHubPage()),
             ),
-            const SizedBox(height: 8),
-            _FeatureCard(
-              icon: Icons.compare,
-              iconColor: Colors.orange,
-              title: 'Compare Two Images',
+            const SizedBox(height: 16),
+
+            // Section 4: Liveness & Anti-Spoofing
+            _buildSectionTitle('ACTIVE & PASSIVE LIVENESS'),
+            _buildHubCard(
+              icon: Icons.face_retouching_natural,
+              accentColor: Colors.teal,
+              title: '🛡️ Liveness & Anti-Spoofing Hub',
               subtitle:
-                  'Select two gallery photos to align landmarks and calculate embedding similarity',
-              onTap: () => _push(const ComparePage()),
+                  'Interactive challenge sequencer (Blink, Turn Left/Right, Smile) and presentation attack protection.',
+              badge: 'Zero Models',
+              onTap: () => _navigate(const LivenessPage()),
             ),
-            const SizedBox(height: 8),
-            _FeatureCard(
-              icon: Icons.people_alt_outlined,
-              iconColor: Colors.blueGrey,
-              title: 'Enrolled Users',
+            const SizedBox(height: 16),
+
+            // Section 5: Local Device Biometrics
+            _buildSectionTitle('LOCAL DEVICE AUTHENTICATION'),
+            _buildHubCard(
+              icon: Icons.security,
+              accentColor: Colors.deepPurple,
+              title: '📱 Local Device Biometrics Hub',
               subtitle:
-                  'View, inspect, and delete enrolled face templates on this device',
-              onTap: () => _push(const EnrolledUsersPage()),
+                  'OS-level Android BiometricPrompt & Apple Face ID / Touch ID with typed success, lockout, and cancel results.',
+              badge: 'OS Native',
+              onTap: () => _navigate(const DeviceBiometricsPage()),
+            ),
+            const SizedBox(height: 16),
+
+            // Section 6: AI Models & Diagnostics
+            _buildSectionTitle('PLUGGABLE AI MODELS & RUNTIME'),
+            _buildHubCard(
+              icon: Icons.memory,
+              accentColor: Colors.teal.shade700,
+              title: '⚙️ AI Models & Hardware Diagnostics',
+              subtitle:
+                  'Model registry, on-device latency benchmarking (ms), hardware delegate inspection (CPU, NNAPI, GPU).',
+              badge: 'Model Manager',
+              onTap: () => _navigate(const ModelsDiagnosticsPage()),
             ),
             const SizedBox(height: 24),
           ],
@@ -226,96 +218,47 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Future<void> _push(Widget page) async {
-    await Navigator.of(context)
-        .push(MaterialPageRoute<void>(builder: (_) => page));
-    _refresh();
-  }
-}
-
-class _SectionHeader extends StatelessWidget {
-  const _SectionHeader({
-    required this.title,
-    required this.badge,
-    required this.badgeColor,
-  });
-
-  final String title;
-  final String badge;
-  final Color badgeColor;
-
-  @override
-  Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-    return Row(
-      children: <Widget>[
-        Text(
-          title,
-          style: theme.textTheme.titleSmall?.copyWith(
-            fontWeight: FontWeight.bold,
-            letterSpacing: 0.3,
-          ),
+  Widget _buildSectionTitle(String title) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 4, bottom: 8),
+      child: Text(
+        title,
+        style: TextStyle(
+          fontSize: 11,
+          fontWeight: FontWeight.w700,
+          color: Colors.grey.shade600,
+          letterSpacing: 0.8,
         ),
-        const Spacer(),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-          decoration: BoxDecoration(
-            color: badgeColor.withOpacity(0.12),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Text(
-            badge,
-            style: TextStyle(
-              color: badgeColor,
-              fontWeight: FontWeight.bold,
-              fontSize: 11,
-            ),
-          ),
-        ),
-      ],
+      ),
     );
   }
-}
 
-class _FeatureCard extends StatelessWidget {
-  const _FeatureCard({
-    required this.icon,
-    required this.iconColor,
-    required this.title,
-    required this.subtitle,
-    required this.onTap,
-    this.highlightChip,
-  });
-
-  final IconData icon;
-  final Color iconColor;
-  final String title;
-  final String subtitle;
-  final VoidCallback onTap;
-  final String? highlightChip;
-
-  @override
-  Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-
+  Widget _buildHubCard({
+    required IconData icon,
+    required Color accentColor,
+    required String title,
+    required String subtitle,
+    required String badge,
+    required VoidCallback onTap,
+  }) {
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: BorderSide(
-            color: theme.colorScheme.outlineVariant.withOpacity(0.7)),
+        borderRadius: BorderRadius.circular(18),
+        side: BorderSide(color: Colors.grey.withOpacity(0.2)),
       ),
       child: InkWell(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(18),
         onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               CircleAvatar(
-                backgroundColor: iconColor.withOpacity(0.12),
                 radius: 24,
-                child: Icon(icon, color: iconColor, size: 26),
+                backgroundColor: accentColor.withOpacity(0.14),
+                child: Icon(icon, color: accentColor, size: 26),
               ),
               const SizedBox(width: 14),
               Expanded(
@@ -324,45 +267,50 @@ class _FeatureCard extends StatelessWidget {
                   children: <Widget>[
                     Row(
                       children: <Widget>[
-                        Flexible(
+                        Expanded(
                           child: Text(
                             title,
                             style: const TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 15),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
                           ),
                         ),
-                        if (highlightChip != null) ...<Widget>[
-                          const SizedBox(width: 6),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 6, vertical: 2),
-                            decoration: BoxDecoration(
-                              color: theme.colorScheme.primaryContainer,
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                            child: Text(
-                              highlightChip!,
-                              style: TextStyle(
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
-                                color: theme.colorScheme.onPrimaryContainer,
-                              ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 3),
+                          decoration: BoxDecoration(
+                            color: accentColor.withOpacity(0.12),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            badge,
+                            style: TextStyle(
+                              color: accentColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 10,
                             ),
                           ),
-                        ],
+                        ),
                       ],
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 6),
                     Text(
                       subtitle,
                       style: TextStyle(
-                          fontSize: 12,
-                          color: theme.colorScheme.onSurfaceVariant),
+                        color: Colors.grey.shade600,
+                        fontSize: 13,
+                        height: 1.3,
+                      ),
                     ),
                   ],
                 ),
               ),
-              Icon(Icons.chevron_right, color: theme.colorScheme.outline),
+              const SizedBox(width: 8),
+              const Padding(
+                padding: EdgeInsets.only(top: 12),
+                child: Icon(Icons.arrow_forward_ios, size: 14, color: Colors.grey),
+              ),
             ],
           ),
         ),

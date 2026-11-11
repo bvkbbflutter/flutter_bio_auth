@@ -1,15 +1,15 @@
-# Flutter Bio Auth
+# Flutter Face Intelligence SDK (flutter_bio_auth)
 
 <p align="center">
   <img src="assets/images/flutter_bio_auth.png" alt="Flutter Bio Auth" width="100%">
 </p>
 
 <p align="center">
-  <strong>Advanced authentication and biometric security for Flutter.</strong>
+  <strong>Modular, On-Device AI Face Intelligence, Biometrics & Delivery Partner Compliance for Flutter.</strong>
 </p>
 
 <p align="center">
-  Face Recognition · Liveness Detection · Fingerprint · Face ID · Pattern · Password
+  Face Recognition · Zepto Uniform & Helmet Check · Active Liveness · Expression AI · Local Device Biometrics · Pluggable TFLite Models
 </p>
 
 <p align="center">
@@ -17,33 +17,176 @@
 [![pub package](https://img.shields.io/pub/v/flutter_bio_auth.svg)](https://pub.dev/packages/flutter_bio_auth)
 [![pub points](https://img.shields.io/pub/points/flutter_bio_auth)](https://pub.dev/packages/flutter_bio_auth/score)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Flutter](https://img.shields.io/badge/Flutter-%3E%3D3.24.3-blue.svg)](https://flutter.dev)
+[![Flutter](https://img.shields.io/badge/Flutter-%3E%3D3.24.0-blue.svg)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/Dart-%3E%3D3.5.0-blue.svg)](https://dart.dev)
 
 </p>
 
 ---
 
-## Overview
+## What is Flutter Face Intelligence SDK?
 
-**Flutter Bio Auth** is a Flutter authentication plugin that provides multiple authentication mechanisms through a unified API.
+**Flutter Face Intelligence SDK** (`flutter_bio_auth`) is a modular, AI-powered on-device face intelligence and authentication plugin for Flutter. 
 
-It supports platform-native device authentication as well as application-controlled face authentication workflows.
+The core philosophy: **One Flutter plugin, multiple AI models, multiple authentication methods, and simple developer-friendly APIs.**
 
-### Authentication methods
+Developers can use only facial expression detection, only face recognition, only local device biometrics, only delivery partner gear checks, or combine all of them without needing to understand the underlying native ML implementation.
 
-* 🔐 Device biometrics
-* 👆 Fingerprint
-* 🙂 Face ID / device face authentication
-* 👤 Face recognition
-* 🛡️ Active liveness detection
-* 🔎 Optional passive anti-spoofing
-* 🔢 Pattern authentication
-* 🔑 Password authentication
-* 🔄 Authentication fallback flows
-* 💾 Secure local biometric template storage
+### Key Capabilities
 
-The plugin is designed for **on-device processing** and does not require a cloud service for its core authentication pipeline.
+* 🛵 **Zepto / Rider Safety & Uniform Compliance**: Multi-factor shift check-in: verifies face identity, detects motorcycle helmet, checks mask status, and matches company uniform colors (Zepto Purple `#5200FF`, Swiggy, Zomato, Blinkit, or custom).
+* 👤 **1:1 Face Recognition & Verification**: Multi-frame enrollment, high-speed continuous live scanning with instant early-exit on match, direct 2-photo cosine matching, and encrypted AES-GCM on-device biometric vault.
+* 🛡️ **Active & Passive Liveness**: Interactive challenge sequencer (Blink, Turn Left, Turn Right, Smile) and presentation attack protection with zero bundled AI models needed.
+* 😊 **Facial Expression & Sentiment AI**: Real-time emotion streaming, continuous smile confidence meter, and winking/blinking classification.
+* 📱 **Local Device Biometrics**: Native Android `BiometricPrompt` and Apple `Face ID` / `Touch ID` / `LocalAuthentication` with typed results (`success`, `cancelled`, `lockedOut`, `notEnrolled`).
+* ⚙️ **Pluggable TFLite Model Architecture**: Dedicated `FaceModelManager` supporting bundled assets, downloaded local files, SHA-256 verification, and hardware delegate benchmarking (CPU, NNAPI, GPU).
+* 🖼️ **Turnkey UI Widgets**: Drop-in widgets for delivery check-in, expression gauges, liveness challenges, smile scanners, and face enrollment.
+
+---
+
+## Quick Start with `FaceAI`
+
+### 1. Simple Initialization
+
+```dart
+import 'package:flutter_bio_auth/flutter_bio_auth.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  // Initialize with sensible defaults (bundled MobileFaceNet, 0.68 threshold)
+  await FaceAI.initialize();
+  
+  runApp(const MyApp());
+}
+```
+
+### 2. Delivery Partner / Rider Safety Check (Zepto Mode)
+
+```dart
+// Check all safety criteria: Face + Helmet + Mask + Zepto Uniform
+final DeliveryComplianceResult result = await FaceAI.checkDeliveryCompliance(
+  userId: 'rider_001',
+  options: const ComplianceOptions(
+    targetUniform: UniformPreset.zeptoPurple,
+    requireHelmet: true,
+    requireFaceVerification: true,
+    requireMask: false, // Rider face must be visible
+  ),
+);
+
+if (result.isReady) {
+  print('Rider Approved for Delivery Duty! 🛵');
+} else {
+  print('Missing items: ${result.missingItems.join(", ")}');
+}
+```
+
+Or present the complete turnkey UI scanner:
+
+```dart
+Navigator.of(context).push(
+  MaterialPageRoute(
+    builder: (context) => DeliveryComplianceView(
+      options: const ComplianceOptions(targetUniform: UniformPreset.zeptoPurple),
+      onComplete: (result) {
+        Navigator.pop(context);
+        print('Check-in status: ${result.isReady}');
+      },
+    ),
+  ),
+);
+```
+
+### 3. Face Recognition & Direct Image Comparison
+
+```dart
+// 1:1 Live Face Verification against enrolled template
+final FaceAuthenticationResult auth = await FaceAI.verifyFace(userId: 'user_001');
+if (auth.authenticated) {
+  print('Identity verified! Similarity: ${auth.similarity}');
+}
+
+// Compare two still photos directly (JPEG/PNG bytes)
+final FaceComparisonResult comparison = await FaceAI.compareFaces(
+  firstImage: capturedBytes,
+  secondImage: idCardPhotoBytes,
+  threshold: 0.68,
+);
+print('Match: ${comparison.isMatch}, Cosine Similarity: ${comparison.similarity}');
+```
+
+### 4. Facial Expression & Real-Time Mood Stream
+
+```dart
+// One-shot detection
+final ExpressionResult result = await FaceAI.detectExpression();
+print('Dominant Expression: ${result.expression.name} (${result.confidence})');
+
+// Real-time stream
+FaceAI.startExpressionStream().listen((result) {
+  print('Smile: ${result.isSmiling}, Blink: ${result.isBlinking}');
+});
+```
+
+### 5. Local Device Biometric Authentication
+
+```dart
+final LocalAuthResult localAuth = await FaceAI.authenticate(
+  reason: 'Authenticate to access Zepto rider app',
+  biometricOnly: true,
+);
+
+switch (localAuth.status) {
+  case LocalAuthStatus.success:
+    // Biometric verified by OS
+    break;
+  case LocalAuthStatus.cancelled:
+    // User cancelled
+    break;
+  case LocalAuthStatus.lockedOut:
+    // Too many failed attempts
+    break;
+  case LocalAuthStatus.notEnrolled:
+    // No biometrics enrolled on device
+    break;
+  default:
+    break;
+}
+```
+
+### 6. Pluggable TFLite Model Manager
+
+```dart
+// Register a custom model
+await FaceAI.models.register(
+  ModelConfig(
+    id: 'arcface_mobile',
+    type: ModelType.faceRecognition,
+    source: ModelSource.asset('assets/models/arcface.tflite'),
+    inputSize: const Size(112, 112),
+    embeddingDimensions: 512,
+    calibratedThreshold: 0.72,
+  ),
+);
+
+// Benchmark on-device latency (ms)
+final BenchmarkResult bench = await FaceAI.models.benchmark(modelId: 'arcface_mobile');
+print('Latency: ${bench.averageInferenceTimeMs}ms on ${bench.executionBackend}');
+```
+
+---
+
+## Example App: 6 Modular Navigation Hubs
+
+To maintain a clean, uncluttered user experience, the example application is organized into 6 dedicated hubs:
+
+1. 🛵 **Zepto / Rider Safety Hub**: Live shift onboarding scanner with floating pills for Helmet, Mask, Face, and Zepto Purple Uniform.
+2. 👤 **Face Recognition Hub**: 1:1 Live Verification, Template Enrollment, 2-Photo Direct Comparison, and Enrolled Vault Manager.
+3. 😊 **Facial Expression & Mood Hub**: Real-time emotion streaming, emotion confidence bars, and smile challenge.
+4. 🛡️ **Active & Passive Liveness Hub**: Guided gesture challenges (Blink, Turn Left/Right, Smile).
+5. 📱 **Local Device Biometrics Hub**: Native `BiometricPrompt` & `Face ID` / `Touch ID` testing with typed status.
+6. ⚙️ **AI Models & Diagnostics Hub**: Model registry, live inference latency benchmark (ms), and hardware delegate inspection (CPU, NNAPI, GPU).
 
 ---
 

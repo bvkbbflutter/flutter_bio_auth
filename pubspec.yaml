@@ -1,12 +1,9 @@
 name: flutter_bio_auth
 description: >
-  On-device face detection, tracking, active liveness challenges, and an
-  injectable 1:1 face-recognition / anti-spoof pipeline for Flutter.
-  Detection/tracking/liveness work with zero bundled AI models (native
-  ML Kit on Android, Vision framework on iOS). Recognition and passive
-  anti-spoofing are model-driven and loaded from a developer-supplied
-  asset path at initialize() time.
-version: 0.1.0
+  Modular, AI-powered on-device face intelligence, 1:1 face recognition,
+  active liveness, facial expressions, delivery partner compliance (Zepto/helmet/uniform),
+  and local device biometrics for Flutter.
+version: 0.2.0
 
 homepage: https://github.com/bvkbbflutter/flutter_bio_auth
 repository: https://github.com/bvkbbflutter/flutter_bio_auth
@@ -27,6 +24,8 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
+  permission_handler: ^11.3.1
+  image_picker: ^1.1.2
 
 flutter:
   plugin:

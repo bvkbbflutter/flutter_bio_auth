@@ -17,12 +17,12 @@ class FaceQualityAnalyzer(
     private val minimumFaceSize: Double,
     private val maximumFaceSize: Double,
     private val requireCentered: Boolean,
-    private val maxFrontalYawDegrees: Double = 25.0,
-    private val maxFrontalPitchDegrees: Double = 25.0,
-    private val centeringTolerance: Double = 0.25,
-    private val minAcceptableBrightness: Double = 0.12,
-    private val maxAcceptableBrightness: Double = 0.95,
-    private val blurVarianceThreshold: Double = 12.0,
+    private val maxFrontalYawDegrees: Double = 32.0,
+    private val maxFrontalPitchDegrees: Double = 32.0,
+    private val centeringTolerance: Double = 0.35,
+    private val minAcceptableBrightness: Double = 0.08,
+    private val maxAcceptableBrightness: Double = 0.98,
+    private val blurVarianceThreshold: Double = 4.0,
 ) {
 
     /**

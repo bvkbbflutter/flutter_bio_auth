@@ -46,6 +46,9 @@ final class EnrollmentSession: SessionRunner {
     private var livenessDone: Bool
     private var capturedEmbeddings: [[Float]] = []
     private var finished = false
+    private var bestSimilarity: Double = 0.0
+    private var matchingAttempts = 0
+    private let maxMatchingAttempts = 20
 
     init(
         userId: String, embeddingEngine: FaceEmbeddingEngine, faceAlignment: FaceAlignment,
@@ -214,6 +217,9 @@ final class AuthenticationSession: SessionRunner {
     private var livenessScore: Double
     private var livenessPassed: Bool
     private var finished = false
+    private var bestSimilarity: Double = 0.0
+    private var matchingAttempts = 0
+    private let maxMatchingAttempts = 20
 
     init(
         userId: String, enrolledTemplate: FaceTemplateNative, embeddingEngine: FaceEmbeddingEngine,
@@ -305,13 +311,29 @@ final class AuthenticationSession: SessionRunner {
             emitState(.authenticating)
             let decision = authenticationEngine.decide(similarity: similarity, livenessPassed: livenessPassed, livenessScore: livenessScore, antiSpoofResult: antiSpoofResult)
 
-            complete([
-                "authenticated": decision.authenticated, "userId": userId, "similarity": decision.similarity,
-                "livenessScore": decision.livenessScore, "antiSpoofScore": decision.antiSpoofScore,
-                "durationMs": Int(Date().timeIntervalSince1970 * 1000 - startedAt), "failureReason": decision.failureReason?.rawValue,
-            ])
+            bestSimilarity = max(bestSimilarity, similarity)
+            matchingAttempts += 1
+
+            if decision.authenticated {
+                complete([
+                    "authenticated": true, "userId": userId, "similarity": decision.similarity,
+                    "livenessScore": decision.livenessScore, "antiSpoofScore": decision.antiSpoofScore,
+                    "durationMs": Int(Date().timeIntervalSince1970 * 1000 - startedAt), "failureReason": nil,
+                ])
+            } else if matchingAttempts >= maxMatchingAttempts || (Date().timeIntervalSince1970 * 1000 - startedAt) >= Double(sessionTimeoutMillis) {
+                complete([
+                    "authenticated": false, "userId": userId, "similarity": bestSimilarity,
+                    "livenessScore": decision.livenessScore, "antiSpoofScore": decision.antiSpoofScore,
+                    "durationMs": Int(Date().timeIntervalSince1970 * 1000 - startedAt), "failureReason": decision.failureReason?.rawValue ?? FaceAuthenticationFailureReason.faceMismatch.rawValue,
+                ])
+            } else {
+                emitState(.validatingFace)
+            }
         } catch {
-            return complete(makeFailure(.unknown))
+            matchingAttempts += 1
+            if matchingAttempts >= maxMatchingAttempts {
+                return complete(makeFailure(.unknown))
+            }
         }
     }
 
@@ -338,6 +360,8 @@ final class AuthenticationSession: SessionRunner {
 
     func reset() {
         finished = false
+        matchingAttempts = 0
+        bestSimilarity = 0.0
         tracker.reset()
         liveness.reset()
         livenessDone = !enableLiveness
@@ -368,6 +392,9 @@ final class LivenessSession: SessionRunner {
     private lazy var qualityAnalyzer = buildQualityAnalyzer(minimumFaceSize, maximumFaceSize, requireCenteredFace)
     private lazy var liveness = LivenessEngine(sequence: livenessSequence, challengeTimeoutMillis: challengeTimeoutMillis)
     private var finished = false
+    private var bestSimilarity: Double = 0.0
+    private var matchingAttempts = 0
+    private let maxMatchingAttempts = 20
 
     init(
         minimumFaceSize: Double,
@@ -459,6 +486,8 @@ final class LivenessSession: SessionRunner {
 
     func reset() {
         finished = false
+        matchingAttempts = 0
+        bestSimilarity = 0.0
         tracker.reset()
         liveness.reset()
     }

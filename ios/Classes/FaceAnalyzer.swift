@@ -106,6 +106,15 @@ final class FaceAnalyzer {
             }
         }
 
+        if landmarkPoints.count < 2 {
+            landmarkPoints.removeAll()
+            let estLeftX = Double(box.minX + box.width * 0.35)
+            let estRightX = Double(box.minX + box.width * 0.65)
+            let estEyeY = Double(1 - (box.minY + box.height * 0.62))
+            landmarkPoints.append(FaceLandmarkPoint(x: estLeftX, y: estEyeY))
+            landmarkPoints.append(FaceLandmarkPoint(x: estRightX, y: estEyeY))
+        }
+
         let roll = face.roll?.doubleValue.map { $0 * 180.0 / .pi }
         let yaw = face.yaw?.doubleValue.map { $0 * 180.0 / .pi }
 

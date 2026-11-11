@@ -107,6 +107,14 @@ class FaceAnalyzer {
         if (leftEyePos != null && rightEyePos != null) {
             landmarks.add(FaceLandmarkPoint((leftEyePos.x / frameWidth).toDouble().coerceIn(0.0, 1.0), (leftEyePos.y / frameHeight).toDouble().coerceIn(0.0, 1.0)))
             landmarks.add(FaceLandmarkPoint((rightEyePos.x / frameWidth).toDouble().coerceIn(0.0, 1.0), (rightEyePos.y / frameHeight).toDouble().coerceIn(0.0, 1.0)))
+        } else {
+            // Robust fallback: Anatomically estimate eye positions from face box geometry
+            // so alignment never swaps eyes with nose/mouth.
+            val estLeftX = (box.left + box.width() * 0.35f) / frameWidth
+            val estRightX = (box.left + box.width() * 0.65f) / frameWidth
+            val estEyeY = (box.top + box.height() * 0.38f) / frameHeight
+            landmarks.add(FaceLandmarkPoint(estLeftX.toDouble().coerceIn(0.0, 1.0), estEyeY.toDouble().coerceIn(0.0, 1.0)))
+            landmarks.add(FaceLandmarkPoint(estRightX.toDouble().coerceIn(0.0, 1.0), estEyeY.toDouble().coerceIn(0.0, 1.0)))
         }
         val otherTypes = listOf(
             FaceLandmark.NOSE_BASE, FaceLandmark.MOUTH_LEFT,

@@ -152,8 +152,9 @@ class _DeviceBiometricsPageState extends State<DeviceBiometricsPage> {
                         onChanged: _authenticating
                             ? null
                             : (DeviceAuthType? val) {
-                                if (val != null)
+                                if (val != null) {
                                   setState(() => _selectedAuthType = val);
+                                }
                               },
                         contentPadding: EdgeInsets.zero,
                       ),
@@ -167,8 +168,9 @@ class _DeviceBiometricsPageState extends State<DeviceBiometricsPage> {
                         onChanged: _authenticating
                             ? null
                             : (DeviceAuthType? val) {
-                                if (val != null)
+                                if (val != null) {
                                   setState(() => _selectedAuthType = val);
+                                }
                               },
                         contentPadding: EdgeInsets.zero,
                       ),
@@ -182,8 +184,9 @@ class _DeviceBiometricsPageState extends State<DeviceBiometricsPage> {
                         onChanged: _authenticating
                             ? null
                             : (DeviceAuthType? val) {
-                                if (val != null)
+                                if (val != null) {
                                   setState(() => _selectedAuthType = val);
+                                }
                               },
                         contentPadding: EdgeInsets.zero,
                       ),
@@ -197,8 +200,9 @@ class _DeviceBiometricsPageState extends State<DeviceBiometricsPage> {
                         onChanged: _authenticating
                             ? null
                             : (DeviceAuthType? val) {
-                                if (val != null)
+                                if (val != null) {
                                   setState(() => _selectedAuthType = val);
+                                }
                               },
                         contentPadding: EdgeInsets.zero,
                       ),

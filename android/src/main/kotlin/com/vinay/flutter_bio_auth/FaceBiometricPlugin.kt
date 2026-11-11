@@ -46,7 +46,7 @@ class FaceBiometricPlugin :
     private var lifecycleOwner: LifecycleOwner? = null
 
     // Configuration, populated by initialize().
-    private var recognitionThreshold = 0.82
+    private var recognitionThreshold = 0.68
     private var livenessThreshold = 0.80
     private var antiSpoofThreshold = 0.80
     private var enableLiveness = true

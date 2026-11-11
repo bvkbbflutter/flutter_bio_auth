@@ -1,7 +1,7 @@
 name: flutter_bio_auth_example
 description: Demo app for flutter_bio_auth.
 publish_to: none
-version: 0.1.0
+version: 0.2.0
 
 environment:
   sdk: ">=3.5.0 <4.0.0"
