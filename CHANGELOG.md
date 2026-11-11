@@ -21,12 +21,20 @@ All notable changes to this project will be documented in this file.
 * **Regenerate & Inspect**: Added instant ID regeneration action and dedicated ID badge UI card in the enrollment screen.
 
 ### Delivery Partner Compliance Overhaul
+* **Live Camera Torso Color Sampling**: Implemented real-time sampling of the rider's chest/torso region directly below the chin in `FaceBiometricPlugin.kt`. Native engine now calculates true upright RGB values (`torsoR`, `torsoG`, `torsoB`) and streams them live to Flutter.
+* **Strict Brand Uniform Verification**: Fixed issue where the target uniform color was previously being fed back as the observed color. Live clothing color is now evaluated against calibrated HSV ranges; non-compliant clothing (such as blue shirts) is strictly rejected for Zepto (Purple), Swiggy (Orange), Zomato (Red), and Blinkit (Yellow).
+* **Live Detected Shirt vs. Target Swatch**: Added a real-time comparison card in `DeliveryComplianceView` displaying a circular swatch of the detected clothing color, human-readable color family description, hex code, and a dynamic `[MATCH]` or `[MISMATCH]` status badge.
 * **Visible Camera Feed**: Redesigned the inspection view to keep the live camera feed clearly visible with green face reticle throughout the check-in process.
 * **No Premature Auto-Dismiss**: Eliminated arbitrary 1.2s auto-dismiss timer; requires explicit "Complete Shift Check-In" tap after passing all safety checks.
-* **Robust Uniform HSV Color Verification**: Implemented reliable uniform color matching using HSV color space distance calculations with configurable tolerance, supporting Zepto Purple, Swiggy Orange, Zomato Red, Blinkit Yellow, or custom presets.
 * **Motorcycle Presence Detection**: Added motorcycle stance and vehicle presence validation with configurable thresholds (`requireMotorcycle`, `minMotorcycleConfidence`).
 * **Granular Results & Reasons**: Added detailed reason strings (`uniformReason`, `helmetReason`, `motorcycleReason`, `faceReason`, `maskReason`) and status badges for each compliance gate.
 * **Live Test Mode**: Added an interactive "Simulate Non-Compliant Uniform" toggle in the UI to verify real-time rejection handling.
+
+### Turnkey UI & Material Tree Hardening
+* **Material Hierarchy Fix**: Wrapped `FaceBiometricScanner` in `Material(color: Colors.black, ...)` and wrapped its close button in `Material(color: Colors.transparent, shape: const CircleBorder(), child: InkWell(...))` to permanently eliminate `No Material widget found` exceptions when opened in standalone routes or dialogs.
+* **Header Flex Overflow Fix**: Restructured the guidance header bar using `Expanded` and `Text(overflow: TextOverflow.ellipsis, maxLines: 1)` to prevent `RenderFlex` layout overflow across all screen sizes.
+* **Turnkey View Resilience**: Wrapped `FaceSmileView`'s error and result cards in `Material` and safe area.
+* **Upfront Camera Permission**: Added upfront `Permission.camera.request()` during initial application launch in `example/lib/main.dart` so all camera features are immediately accessible without secondary prompts.
 
 ### AI Models & Diagnostics Hub & Model Selection
 * **Multi-Model Catalog**: Registered multiple AI models out of the box (MobileFaceNet 192-d, ArcFace Mobile 512-d, FaceNet Mobile 128-d, MiniVision Anti-Spoof, EmotionNet Expression).

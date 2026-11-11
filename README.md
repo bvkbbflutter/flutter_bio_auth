@@ -71,6 +71,7 @@ final DeliveryComplianceResult result = await FaceAI.checkDeliveryCompliance(
     targetUniform: UniformPreset.zeptoPurple,
     requireHelmet: true,
     requireFaceVerification: true,
+    requireMotorcycle: true,
     requireMask: false, // Rider face must be visible
   ),
 );
@@ -82,16 +83,21 @@ if (result.isReady) {
 }
 ```
 
-Or present the complete turnkey UI scanner:
+Or present the complete turnkey UI scanner with real-time torso color sampling & live match swatches:
 
 ```dart
 Navigator.of(context).push(
   MaterialPageRoute(
     builder: (context) => DeliveryComplianceView(
-      options: const ComplianceOptions(targetUniform: UniformPreset.zeptoPurple),
+      options: const ComplianceOptions(
+        targetUniform: UniformPreset.zeptoPurple,
+        requireHelmet: true,
+        requireMotorcycle: true,
+      ),
       onComplete: (result) {
         Navigator.pop(context);
         print('Check-in status: ${result.isReady}');
+        print('Observed shirt: ${result.detectedUniformColor}');
       },
     ),
   ),
