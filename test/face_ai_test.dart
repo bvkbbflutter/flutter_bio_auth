@@ -29,7 +29,8 @@ void main() {
       );
 
       await manager.register(customConfig);
-      await manager.activate(ModelType.faceRecognition, modelId: 'arcface_custom');
+      await manager.activate(ModelType.faceRecognition,
+          modelId: 'arcface_custom');
 
       final active = manager.getActiveModel(ModelType.faceRecognition);
       expect(active?.id, 'arcface_custom');

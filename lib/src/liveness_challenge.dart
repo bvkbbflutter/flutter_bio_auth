@@ -3,7 +3,7 @@
 /// Detection of every challenge here is backed by native, model-free
 /// platform face APIs (ML Kit face classification/Euler angles on
 /// Android, `VNFaceObservation` landmarks/roll-yaw on iOS) plus
-/// temporal smoothing in [FaceTracker] — none of these require a
+/// temporal smoothing — none of these require a
 /// bundled AI model.
 enum LivenessChallenge {
   blink,
@@ -30,7 +30,7 @@ class LivenessChallengeSpec {
   final LivenessChallenge challenge;
   final String instruction;
 
-  /// Minimum per-challenge confidence in [0, 1] for completion.
+  /// Minimum per-challenge confidence in (0 to 1) for completion.
   final double confidenceThreshold;
 
   /// Whether the state machine must observe a neutral state both

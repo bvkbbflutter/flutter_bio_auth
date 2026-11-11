@@ -55,7 +55,8 @@ class FaceAI {
   static const LivenessService liveness = LivenessService();
 
   /// Subsystem for Zepto / Rider safety gear & uniform compliance.
-  static const DeliveryComplianceService compliance = DeliveryComplianceService();
+  static const DeliveryComplianceService compliance =
+      DeliveryComplianceService();
 
   /// Pluggable TFLite AI model registry and manager.
   static final FaceModelManager models = FaceModelManager();

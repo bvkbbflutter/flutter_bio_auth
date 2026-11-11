@@ -16,7 +16,7 @@ enum FaceAuthenticationMode {
   /// Recognition + active liveness + passive anti-spoof model. The
   /// default. Requires [FaceBiometricConfig.antiSpoofModelAssetPath]
   /// to be configured; if it isn't, authentication fails closed
-  /// (returns [BiometricFailureReason.modelUnavailable]) rather than
+  /// (returns [FaceAuthenticationFailureReason.modelUnavailable]) rather than
   /// silently downgrading to [faceWithLiveness].
   faceWithLivenessAndAntiSpoof,
 }

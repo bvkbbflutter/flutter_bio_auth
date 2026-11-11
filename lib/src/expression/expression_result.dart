@@ -14,24 +14,25 @@ class ExpressionResult {
   /// The dominant detected facial expression.
   final FacialExpression expression;
 
-  /// Confidence of the dominant expression in [0.0, 1.0].
+  /// Confidence of the dominant expression in range (0.0 to 1.0).
   final double confidence;
 
   /// Probability distribution across supported expressions.
   final Map<FacialExpression, double> expressions;
 
-  /// Specific probability of smiling [0.0, 1.0].
+  /// Specific probability of smiling (0.0 to 1.0).
   final double? smilingProbability;
 
-  /// Probability that left eye is open [0.0, 1.0].
+  /// Probability that left eye is open (0.0 to 1.0).
   final double? leftEyeOpenProbability;
 
-  /// Probability that right eye is open [0.0, 1.0].
+  /// Probability that right eye is open (0.0 to 1.0).
   final double? rightEyeOpenProbability;
 
   /// Convenience helper: whether the user is smiling with >= 0.70 confidence.
   bool get isSmiling =>
-      expression == FacialExpression.smile || (smilingProbability ?? 0.0) >= 0.70;
+      expression == FacialExpression.smile ||
+      (smilingProbability ?? 0.0) >= 0.70;
 
   /// Convenience helper: whether user is blinking (both eyes closed).
   bool get isBlinking =>
@@ -68,8 +69,7 @@ class ExpressionResult {
     final map = <FacialExpression, double>{
       FacialExpression.smile: smile,
       FacialExpression.neutral: (1.0 - smile).clamp(0.0, 1.0),
-      FacialExpression.blink:
-          ((1.0 - leftOpen) + (1.0 - rightOpen)) / 2.0,
+      FacialExpression.blink: ((1.0 - leftOpen) + (1.0 - rightOpen)) / 2.0,
     };
 
     return ExpressionResult(

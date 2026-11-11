@@ -17,7 +17,8 @@ class ResultPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color color = success ? Colors.green : Theme.of(context).colorScheme.error;
+    final Color color =
+        success ? Colors.green : Theme.of(context).colorScheme.error;
     return Scaffold(
       appBar: AppBar(title: const Text('Result')),
       body: Center(
@@ -26,9 +27,12 @@ class ResultPage extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              Icon(success ? Icons.check_circle : Icons.cancel, color: color, size: 72),
+              Icon(success ? Icons.check_circle : Icons.cancel,
+                  color: color, size: 72),
               const SizedBox(height: 16),
-              Text(title, style: Theme.of(context).textTheme.headlineSmall, textAlign: TextAlign.center),
+              Text(title,
+                  style: Theme.of(context).textTheme.headlineSmall,
+                  textAlign: TextAlign.center),
               const SizedBox(height: 24),
               Card(
                 child: Padding(
@@ -42,7 +46,9 @@ class ResultPage extends StatelessWidget {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
-                                Text(e.key, style: const TextStyle(fontWeight: FontWeight.w600)),
+                                Text(e.key,
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.w600)),
                                 Text(e.value),
                               ],
                             ),

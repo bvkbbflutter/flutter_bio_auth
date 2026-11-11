@@ -46,7 +46,8 @@ class _FaceBiometricScannerState extends State<FaceBiometricScanner> {
     _startTimer();
 
     // Reset challenge countdown when challenge transitions
-    _progressSub = widget.controller.challengeProgressStream.listen((LivenessChallengeProgress p) {
+    _progressSub = widget.controller.challengeProgressStream
+        .listen((LivenessChallengeProgress p) {
       if (p.challenge.name != _lastChallengeName) {
         _lastChallengeName = p.challenge.name;
       }
@@ -76,7 +77,8 @@ class _FaceBiometricScannerState extends State<FaceBiometricScanner> {
 
   @override
   Widget build(BuildContext context) {
-    final String timerText = '00:${_remainingSeconds.toString().padLeft(2, '0')}';
+    final String timerText =
+        '00:${_remainingSeconds.toString().padLeft(2, '0')}';
     final bool isUrgent = _remainingSeconds <= 5;
 
     return Material(
@@ -92,7 +94,8 @@ class _FaceBiometricScannerState extends State<FaceBiometricScanner> {
             // 2. Cutout mask with transparent central ellipse & glowing reticle
             StreamBuilder<FaceBiometricState>(
               stream: widget.controller.stateStream,
-              builder: (BuildContext context, AsyncSnapshot<FaceBiometricState> snap) {
+              builder: (BuildContext context,
+                  AsyncSnapshot<FaceBiometricState> snap) {
                 return FaceCutoutOverlay(state: snap.data);
               },
             ),
@@ -107,7 +110,8 @@ class _FaceBiometricScannerState extends State<FaceBiometricScanner> {
                   // Guidance Badge
                   Expanded(
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 7),
                       decoration: BoxDecoration(
                         color: Colors.black.withOpacity(0.75),
                         borderRadius: BorderRadius.circular(20),
@@ -116,14 +120,18 @@ class _FaceBiometricScannerState extends State<FaceBiometricScanner> {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
-                          const Icon(Icons.face_retouching_natural, color: Colors.cyanAccent, size: 16),
+                          const Icon(Icons.face_retouching_natural,
+                              color: Colors.cyanAccent, size: 16),
                           const SizedBox(width: 6),
                           Expanded(
                             child: Text(
                               widget.title,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600),
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600),
                             ),
                           ),
                         ],
@@ -135,9 +143,12 @@ class _FaceBiometricScannerState extends State<FaceBiometricScanner> {
                   if (widget.showTimer) ...<Widget>[
                     const SizedBox(width: 8),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 7),
                       decoration: BoxDecoration(
-                        color: isUrgent ? Colors.red.withOpacity(0.85) : Colors.black.withOpacity(0.75),
+                        color: isUrgent
+                            ? Colors.red.withOpacity(0.85)
+                            : Colors.black.withOpacity(0.75),
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
                           color: isUrgent ? Colors.redAccent : Colors.white24,
@@ -155,7 +166,8 @@ class _FaceBiometricScannerState extends State<FaceBiometricScanner> {
                           Text(
                             timerText,
                             style: TextStyle(
-                              color: isUrgent ? Colors.white : Colors.amberAccent,
+                              color:
+                                  isUrgent ? Colors.white : Colors.amberAccent,
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
                               letterSpacing: 0.5,
@@ -181,7 +193,8 @@ class _FaceBiometricScannerState extends State<FaceBiometricScanner> {
                             shape: BoxShape.circle,
                             border: Border.all(color: Colors.white24),
                           ),
-                          child: const Icon(Icons.close, color: Colors.white, size: 16),
+                          child: const Icon(Icons.close,
+                              color: Colors.white, size: 16),
                         ),
                       ),
                     ),
@@ -190,37 +203,41 @@ class _FaceBiometricScannerState extends State<FaceBiometricScanner> {
               ),
             ),
 
-          // 4. Bottom Challenge HUD & Status
-          Positioned(
-            left: 16,
-            right: 16,
-            bottom: 16,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                StreamBuilder<LivenessChallengeProgress>(
-                  stream: widget.controller.challengeProgressStream,
-                  builder: (BuildContext context, AsyncSnapshot<LivenessChallengeProgress> snap) {
-                    final LivenessChallengeProgress? p = snap.data;
-                    if (p == null || p.completed) return const SizedBox.shrink();
-                    return _ChallengeCard(progress: p);
-                  },
-                ),
-                const SizedBox(height: 6),
-                StreamBuilder<FaceBiometricState>(
-                  stream: widget.controller.stateStream,
-                  builder: (BuildContext context, AsyncSnapshot<FaceBiometricState> snap) {
-                    return _StatusBadge(state: snap.data);
-                  },
-                ),
-              ],
+            // 4. Bottom Challenge HUD & Status
+            Positioned(
+              left: 16,
+              right: 16,
+              bottom: 16,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  StreamBuilder<LivenessChallengeProgress>(
+                    stream: widget.controller.challengeProgressStream,
+                    builder: (BuildContext context,
+                        AsyncSnapshot<LivenessChallengeProgress> snap) {
+                      final LivenessChallengeProgress? p = snap.data;
+                      if (p == null || p.completed) {
+                        return const SizedBox.shrink();
+                      }
+                      return _ChallengeCard(progress: p);
+                    },
+                  ),
+                  const SizedBox(height: 6),
+                  StreamBuilder<FaceBiometricState>(
+                    stream: widget.controller.stateStream,
+                    builder: (BuildContext context,
+                        AsyncSnapshot<FaceBiometricState> snap) {
+                      return _StatusBadge(state: snap.data);
+                    },
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-    ),
-  );
-}
+    );
+  }
 }
 
 class _ChallengeCard extends StatelessWidget {
@@ -269,7 +286,8 @@ class _ChallengeCard extends StatelessWidget {
                       const SizedBox(height: 2),
                       Text(
                         'Progress ${(progress.progress * 100).toInt()}%',
-                        style: const TextStyle(color: Colors.white70, fontSize: 12),
+                        style: const TextStyle(
+                            color: Colors.white70, fontSize: 12),
                       ),
                     ],
                   ),
@@ -283,7 +301,8 @@ class _ChallengeCard extends StatelessWidget {
                 value: progress.progress.clamp(0.0, 1.0),
                 minHeight: 6,
                 backgroundColor: Colors.white12,
-                valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF00E676)),
+                valueColor:
+                    const AlwaysStoppedAnimation<Color>(Color(0xFF00E676)),
               ),
             ),
           ],
@@ -428,7 +447,8 @@ class _StatusBadge extends StatelessWidget {
           const SizedBox(width: 6),
           Text(
             label,
-            style: TextStyle(color: color, fontSize: 12, fontWeight: FontWeight.w600),
+            style: TextStyle(
+                color: color, fontSize: 12, fontWeight: FontWeight.w600),
           ),
         ],
       ),

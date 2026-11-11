@@ -34,15 +34,15 @@ class ComplianceOptions {
   /// Optional custom color when [targetUniform] is [UniformPreset.custom].
   final Color? customUniformColor;
 
-  /// Minimum confidence [0.0, 1.0] to accept uniform match.
+  /// Minimum confidence (0.0 to 1.0) to accept uniform match.
   final double minUniformConfidence;
 
-  /// Minimum confidence [0.0, 1.0] to confirm helmet presence.
+  /// Minimum confidence (0.0 to 1.0) to confirm helmet presence.
   final double minHelmetConfidence;
 
-  /// Minimum confidence [0.0, 1.0] to confirm motorcycle / two-wheeler presence.
+  /// Minimum confidence (0.0 to 1.0) to confirm motorcycle / two-wheeler presence.
   final double minMotorcycleConfidence;
 
-  /// Minimum confidence [0.0, 1.0] for mask detection.
+  /// Minimum confidence (0.0 to 1.0) for mask detection.
   final double minMaskConfidence;
 }

@@ -1,4 +1,4 @@
-/// Normalized [0,1] bounding box, relative to frame width/height, so
+/// Normalized (0 to 1) bounding box, relative to frame width/height, so
 /// Dart never needs to know the native frame resolution.
 class FaceBoundingBox {
   const FaceBoundingBox({
@@ -23,7 +23,7 @@ class FaceBoundingBox {
   final double height;
 }
 
-/// A single 2D landmark point, normalized [0,1].
+/// A single 2D landmark point, normalized (0 to 1).
 class FaceLandmarkPoint {
   const FaceLandmarkPoint(this.x, this.y);
 
@@ -39,8 +39,8 @@ class FaceLandmarkPoint {
 }
 
 /// Raw per-frame face detection output from the native face detector
-/// (ML Kit / Vision — no bundled model required). [FaceTracker]
-/// consumes a stream of these to produce smoothed, debounced signals.
+/// (ML Kit / Vision — no bundled model required).
+/// Used across streams to produce smoothed, debounced signals.
 class FaceDetectionResult {
   const FaceDetectionResult({
     required this.faceCount,

@@ -158,7 +158,9 @@ class _ExpressionMeterViewState extends State<ExpressionMeterView> {
                   const SizedBox(height: 8),
                   _buildProgressBar(
                     'Eye Openness',
-                    ((_current.leftEyeOpenProbability ?? 0.9) + (_current.rightEyeOpenProbability ?? 0.9)) / 2.0,
+                    ((_current.leftEyeOpenProbability ?? 0.9) +
+                            (_current.rightEyeOpenProbability ?? 0.9)) /
+                        2.0,
                     Colors.amberAccent,
                   ),
                 ],
@@ -198,7 +200,8 @@ class _ExpressionMeterViewState extends State<ExpressionMeterView> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Text(label, style: const TextStyle(color: Colors.white70, fontSize: 12)),
+            Text(label,
+                style: const TextStyle(color: Colors.white70, fontSize: 12)),
             Text('${(value * 100).toInt()}%',
                 style: const TextStyle(color: Colors.white70, fontSize: 12)),
           ],

@@ -17,7 +17,7 @@ class FaceMatcher {
 
   /// Cosine similarity of [a] and [b]: dot(a,b) / (||a|| * ||b||).
   ///
-  /// Returns a value in [-1.0, 1.0] (typically [0.0, 1.0] for
+  /// Returns a value in the range (-1.0 to 1.0) (typically 0.0 to 1.0 for
   /// normalized face embeddings). Throws [ArgumentError] if the
   /// vectors have different lengths or either is empty.
   double cosineSimilarity(List<double> a, List<double> b) {

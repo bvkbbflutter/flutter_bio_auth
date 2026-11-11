@@ -40,8 +40,7 @@ class FaceRecognitionService {
     required Uint8List secondImage,
     double threshold = 0.68,
   }) async {
-    final FaceMatchResult result =
-        await FaceBiometricPlatform.instance.compare(
+    final FaceMatchResult result = await FaceBiometricPlatform.instance.compare(
       firstImage: firstImage,
       secondImage: secondImage,
     );

@@ -33,8 +33,10 @@ class ExpressionService {
     sub = FaceBiometricPlatform.instance.detectionStream.listen((data) {
       if (!completer.isCompleted) {
         final double? smile = (data['smilingProbability'] as num?)?.toDouble();
-        final double? leftEye = (data['leftEyeOpenProbability'] as num?)?.toDouble();
-        final double? rightEye = (data['rightEyeOpenProbability'] as num?)?.toDouble();
+        final double? leftEye =
+            (data['leftEyeOpenProbability'] as num?)?.toDouble();
+        final double? rightEye =
+            (data['rightEyeOpenProbability'] as num?)?.toDouble();
         completer.complete(ExpressionResult.fromProbabilities(
           smilingProbability: smile,
           leftEyeOpenProbability: leftEye,
@@ -82,12 +84,16 @@ class ExpressionService {
       onListen: () {
         bool receivedNativeTelemetry = false;
 
-        detectionSub = FaceBiometricPlatform.instance.detectionStream.listen((data) {
+        detectionSub =
+            FaceBiometricPlatform.instance.detectionStream.listen((data) {
           receivedNativeTelemetry = true;
           fallbackTicker?.cancel();
-          final double? smile = (data['smilingProbability'] as num?)?.toDouble();
-          final double? leftEye = (data['leftEyeOpenProbability'] as num?)?.toDouble();
-          final double? rightEye = (data['rightEyeOpenProbability'] as num?)?.toDouble();
+          final double? smile =
+              (data['smilingProbability'] as num?)?.toDouble();
+          final double? leftEye =
+              (data['leftEyeOpenProbability'] as num?)?.toDouble();
+          final double? rightEye =
+              (data['rightEyeOpenProbability'] as num?)?.toDouble();
 
           final res = ExpressionResult.fromProbabilities(
             smilingProbability: smile,
@@ -98,7 +104,8 @@ class ExpressionService {
         });
 
         // Fallback ticker to guarantee UI responsiveness when running without hardware camera
-        fallbackTicker = Timer.periodic(const Duration(milliseconds: 250), (timer) {
+        fallbackTicker =
+            Timer.periodic(const Duration(milliseconds: 250), (timer) {
           if (receivedNativeTelemetry) {
             timer.cancel();
             return;
@@ -108,7 +115,8 @@ class ExpressionService {
           if (tickCount % 20 < 10) {
             simulatedSmile = (0.20 + (tickCount % 10) * 0.07).clamp(0.0, 0.95);
           } else {
-            simulatedSmile = (0.90 - ((tickCount - 10) % 10) * 0.07).clamp(0.0, 0.95);
+            simulatedSmile =
+                (0.90 - ((tickCount - 10) % 10) * 0.07).clamp(0.0, 0.95);
           }
           final res = ExpressionResult.fromProbabilities(
             smilingProbability: simulatedSmile,

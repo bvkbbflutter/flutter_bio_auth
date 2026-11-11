@@ -52,12 +52,12 @@ class _DeliveryComplianceViewState extends State<DeliveryComplianceView> {
     _subscription?.cancel();
     _subscription = FaceAI.compliance
         .startComplianceStream(
-          options: widget.options,
-          // null allows live camera frame color sampling; non-null overrides for simulation
-          clothingColor: _simulatingNonCompliantColor
-              ? const Color(0xFF2E7D32) // Contrasting green clothing
-              : null,
-        )
+      options: widget.options,
+      // null allows live camera frame color sampling; non-null overrides for simulation
+      clothingColor: _simulatingNonCompliantColor
+          ? const Color(0xFF2E7D32) // Contrasting green clothing
+          : null,
+    )
         .listen((result) {
       if (mounted) {
         setState(() {
@@ -110,7 +110,9 @@ class _DeliveryComplianceViewState extends State<DeliveryComplianceView> {
           // 2. Cutout Overlay with bright green reticle when detected
           Positioned.fill(
             child: FaceCutoutOverlay(
-              state: allReady ? FaceBiometricState.success : FaceBiometricState.faceDetected,
+              state: allReady
+                  ? FaceBiometricState.success
+                  : FaceBiometricState.faceDetected,
             ),
           ),
 
@@ -131,7 +133,8 @@ class _DeliveryComplianceViewState extends State<DeliveryComplianceView> {
                   CircleAvatar(
                     backgroundColor: widget.options.targetUniform.primaryColor,
                     radius: 18,
-                    child: const Icon(Icons.two_wheeler, color: Colors.white, size: 20),
+                    child: const Icon(Icons.two_wheeler,
+                        color: Colors.white, size: 20),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
@@ -159,7 +162,8 @@ class _DeliveryComplianceViewState extends State<DeliveryComplianceView> {
                   ),
                   if (widget.onCancel != null)
                     IconButton(
-                      icon: const Icon(Icons.close, color: Colors.white, size: 20),
+                      icon: const Icon(Icons.close,
+                          color: Colors.white, size: 20),
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(),
                       onPressed: widget.onCancel,
@@ -201,7 +205,9 @@ class _DeliveryComplianceViewState extends State<DeliveryComplianceView> {
                     children: <Widget>[
                       Icon(
                         allReady ? Icons.check_circle : Icons.shield_outlined,
-                        color: allReady ? const Color(0xFF00E676) : Colors.orangeAccent,
+                        color: allReady
+                            ? const Color(0xFF00E676)
+                            : Colors.orangeAccent,
                         size: 24,
                       ),
                       const SizedBox(width: 10),
@@ -211,7 +217,9 @@ class _DeliveryComplianceViewState extends State<DeliveryComplianceView> {
                               ? 'All Checks Compliant — Ready for Shift!'
                               : 'Live Scanning Rider Safety Gear…',
                           style: TextStyle(
-                            color: allReady ? const Color(0xFF00E676) : Colors.white,
+                            color: allReady
+                                ? const Color(0xFF00E676)
+                                : Colors.white,
                             fontSize: 15,
                             fontWeight: FontWeight.bold,
                           ),
@@ -242,13 +250,15 @@ class _DeliveryComplianceViewState extends State<DeliveryComplianceView> {
                     icon: Icons.two_wheeler,
                     title: 'Motorcycle Check',
                     passed: motorcyclePassed,
-                    reason: result?.motorcycleReason ?? 'Two-wheeler context pending',
+                    reason: result?.motorcycleReason ??
+                        'Two-wheeler context pending',
                     required: widget.options.requireMotorcycle,
                   ),
                   const SizedBox(height: 6),
                   _buildCheckRow(
                     icon: Icons.checkroom_outlined,
-                    title: 'Uniform (${widget.options.targetUniform.displayName})',
+                    title:
+                        'Uniform (${widget.options.targetUniform.displayName})',
                     passed: uniformPassed,
                     reason: result?.uniformReason ?? 'Matching uniform color…',
                     required: true,
@@ -268,7 +278,8 @@ class _DeliveryComplianceViewState extends State<DeliveryComplianceView> {
                   if (result?.detectedUniformColor != null) ...<Widget>[
                     const SizedBox(height: 10),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 8),
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.08),
                         borderRadius: BorderRadius.circular(12),
@@ -286,7 +297,8 @@ class _DeliveryComplianceViewState extends State<DeliveryComplianceView> {
                             decoration: BoxDecoration(
                               color: result!.detectedUniformColor,
                               shape: BoxShape.circle,
-                              border: Border.all(color: Colors.white, width: 1.5),
+                              border:
+                                  Border.all(color: Colors.white, width: 1.5),
                             ),
                           ),
                           const SizedBox(width: 8),
@@ -315,16 +327,21 @@ class _DeliveryComplianceViewState extends State<DeliveryComplianceView> {
                             ),
                           ),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 6, vertical: 2),
                             decoration: BoxDecoration(
-                              color: (uniformPassed ? const Color(0xFF00E676) : Colors.redAccent)
+                              color: (uniformPassed
+                                      ? const Color(0xFF00E676)
+                                      : Colors.redAccent)
                                   .withOpacity(0.2),
                               borderRadius: BorderRadius.circular(6),
                             ),
                             child: Text(
                               uniformPassed ? 'MATCH' : 'MISMATCH',
                               style: TextStyle(
-                                color: uniformPassed ? const Color(0xFF00E676) : Colors.redAccent,
+                                color: uniformPassed
+                                    ? const Color(0xFF00E676)
+                                    : Colors.redAccent,
                                 fontSize: 10,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -345,13 +362,18 @@ class _DeliveryComplianceViewState extends State<DeliveryComplianceView> {
                         onTap: _toggleSimulatedColor,
                         borderRadius: BorderRadius.circular(8),
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 4, vertical: 4),
                           child: Row(
                             children: <Widget>[
                               Icon(
-                                _simulatingNonCompliantColor ? Icons.error_outline : Icons.palette_outlined,
+                                _simulatingNonCompliantColor
+                                    ? Icons.error_outline
+                                    : Icons.palette_outlined,
                                 size: 14,
-                                color: _simulatingNonCompliantColor ? Colors.redAccent : Colors.white60,
+                                color: _simulatingNonCompliantColor
+                                    ? Colors.redAccent
+                                    : Colors.white60,
                               ),
                               const SizedBox(width: 4),
                               Text(
@@ -360,7 +382,9 @@ class _DeliveryComplianceViewState extends State<DeliveryComplianceView> {
                                     : 'Test Non-Compliant Uniform',
                                 style: TextStyle(
                                   fontSize: 11,
-                                  color: _simulatingNonCompliantColor ? Colors.redAccent : Colors.white60,
+                                  color: _simulatingNonCompliantColor
+                                      ? Colors.redAccent
+                                      : Colors.white60,
                                   decoration: TextDecoration.underline,
                                 ),
                               ),
@@ -370,7 +394,8 @@ class _DeliveryComplianceViewState extends State<DeliveryComplianceView> {
                       ),
                       Text(
                         'Confidence: ${((result?.uniformConfidence ?? 0.8) * 100).toInt()}%',
-                        style: const TextStyle(color: Colors.white54, fontSize: 11),
+                        style: const TextStyle(
+                            color: Colors.white54, fontSize: 11),
                       ),
                     ],
                   ),
@@ -386,15 +411,20 @@ class _DeliveryComplianceViewState extends State<DeliveryComplianceView> {
                             : widget.options.targetUniform.primaryColor,
                         foregroundColor: allReady ? Colors.black : Colors.white,
                         padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14)),
                       ),
                       onPressed: allReady && result != null
                           ? () => widget.onComplete(result)
                           : null,
-                      icon: Icon(allReady ? Icons.check_circle : Icons.camera_alt),
+                      icon: Icon(
+                          allReady ? Icons.check_circle : Icons.camera_alt),
                       label: Text(
-                        allReady ? 'Complete Shift Check-In' : 'Waiting for Safety Compliance…',
-                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                        allReady
+                            ? 'Complete Shift Check-In'
+                            : 'Waiting for Safety Compliance…',
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 14),
                       ),
                     ),
                   ),
@@ -414,13 +444,17 @@ class _DeliveryComplianceViewState extends State<DeliveryComplianceView> {
     required String reason,
     required bool required,
   }) {
-    final Color stateColor = passed ? const Color(0xFF00E676) : (required ? Colors.redAccent : Colors.white38);
+    final Color stateColor = passed
+        ? const Color(0xFF00E676)
+        : (required ? Colors.redAccent : Colors.white38);
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Icon(
-          passed ? Icons.check_circle : (required ? Icons.cancel : Icons.remove_circle_outline),
+          passed
+              ? Icons.check_circle
+              : (required ? Icons.cancel : Icons.remove_circle_outline),
           color: stateColor,
           size: 16,
         ),
@@ -441,14 +475,18 @@ class _DeliveryComplianceViewState extends State<DeliveryComplianceView> {
                   ),
                   const SizedBox(width: 6),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
                     decoration: BoxDecoration(
                       color: stateColor.withOpacity(0.15),
                       borderRadius: BorderRadius.circular(4),
                     ),
                     child: Text(
                       passed ? 'PASS' : (required ? 'FAIL' : 'OPTIONAL'),
-                      style: TextStyle(color: stateColor, fontSize: 9, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          color: stateColor,
+                          fontSize: 9,
+                          fontWeight: FontWeight.bold),
                     ),
                   ),
                 ],

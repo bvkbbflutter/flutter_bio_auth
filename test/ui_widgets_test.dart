@@ -59,7 +59,8 @@ class MockPlatform extends FaceBiometricPlatform {
   }
 
   @override
-  Stream<Map<String, dynamic>> get detectionStream => const Stream<Map<String, dynamic>>.empty();
+  Stream<Map<String, dynamic>> get detectionStream =>
+      const Stream<Map<String, dynamic>>.empty();
 
   @override
   Future<void> startFaceDetection() async {}

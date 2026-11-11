@@ -96,7 +96,8 @@ class _HomePageState extends State<HomePage> {
                       ),
                       Chip(
                         label: Text('v0.2.0',
-                            style: TextStyle(fontSize: 11, color: Colors.white)),
+                            style:
+                                TextStyle(fontSize: 11, color: Colors.white)),
                         backgroundColor: Colors.white24,
                         padding: EdgeInsets.zero,
                         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -309,7 +310,8 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(width: 8),
               const Padding(
                 padding: EdgeInsets.only(top: 12),
-                child: Icon(Icons.arrow_forward_ios, size: 14, color: Colors.grey),
+                child:
+                    Icon(Icons.arrow_forward_ios, size: 14, color: Colors.grey),
               ),
             ],
           ),

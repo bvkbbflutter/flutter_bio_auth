@@ -88,7 +88,8 @@ class HappyPage extends StatelessWidget {
                 // Confidence badge card
                 Center(
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 18, vertical: 10),
                     decoration: BoxDecoration(
                       color: Colors.white.withOpacity(0.9),
                       borderRadius: BorderRadius.circular(24),
@@ -97,7 +98,8 @@ class HappyPage extends StatelessWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
-                        const Icon(Icons.verified, color: Colors.green, size: 20),
+                        const Icon(Icons.verified,
+                            color: Colors.green, size: 20),
                         const SizedBox(width: 8),
                         Text(
                           'Smile Verified: ${(smileConfidence * 100).toStringAsFixed(0)}% Confidence',
@@ -123,7 +125,8 @@ class HappyPage extends StatelessWidget {
                     backgroundColor: const Color(0xFF4E342E),
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16)),
                   ),
                 ),
                 const SizedBox(height: 16),

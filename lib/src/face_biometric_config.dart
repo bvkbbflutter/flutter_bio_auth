@@ -14,7 +14,8 @@ class FaceBiometricConfig {
     this.antiSpoofThreshold = 0.80,
     this.enableLiveness = true,
     this.enableAntiSpoofing = true,
-    this.authenticationMode = FaceAuthenticationMode.faceWithLivenessAndAntiSpoof,
+    this.authenticationMode =
+        FaceAuthenticationMode.faceWithLivenessAndAntiSpoof,
     this.captureFaceImage = false,
     this.sessionTimeout = const Duration(seconds: 90),
     this.challengeTimeout = const Duration(seconds: 25),
@@ -35,15 +36,15 @@ class FaceBiometricConfig {
     this.embeddingDimension = 192,
   });
 
-  /// Minimum cosine similarity in [0, 1] for two embeddings to be
+  /// Minimum cosine similarity in (0 to 1) for two embeddings to be
   /// considered the same person. Tunable; see README.
   final double recognitionThreshold;
 
-  /// Minimum aggregate liveness confidence in [0, 1] required to pass
+  /// Minimum aggregate liveness confidence in (0 to 1) required to pass
   /// the active-liveness challenge sequence.
   final double livenessThreshold;
 
-  /// Minimum "live" probability in [0, 1] from the passive anti-spoof
+  /// Minimum "live" probability in (0 to 1) from the passive anti-spoof
   /// model required to accept the frame as a real presentation.
   final double antiSpoofThreshold;
 
@@ -100,7 +101,7 @@ class FaceBiometricConfig {
   /// Flutter asset path (e.g. `assets/models/face_embedding.tflite`) to
   /// a face-embedding model the *consuming app* bundles. Null/empty
   /// means recognition is unavailable and enroll/authenticate/compare
-  /// will return [BiometricFailureReason.modelUnavailable] instead of a
+  /// will return [FaceAuthenticationFailureReason.modelUnavailable] instead of a
   /// fabricated result. Detection, tracking, landmarks, quality, and
   /// active liveness all work without this being set.
   final String? embeddingModelAssetPath;

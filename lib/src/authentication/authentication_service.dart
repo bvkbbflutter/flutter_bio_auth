@@ -29,17 +29,20 @@ class AuthenticationService {
       if (success) {
         return LocalAuthResult.success();
       } else {
-        return LocalAuthResult.failed('Authentication unsuccessful or cancelled.');
+        return LocalAuthResult.failed(
+            'Authentication unsuccessful or cancelled.');
       }
     } catch (e) {
       final errorStr = e.toString().toLowerCase();
       if (errorStr.contains('cancel')) {
         return LocalAuthResult.cancelled();
-      } else if (errorStr.contains('notenrolled') || errorStr.contains('no biometric')) {
+      } else if (errorStr.contains('notenrolled') ||
+          errorStr.contains('no biometric')) {
         return LocalAuthResult.notEnrolled();
       } else if (errorStr.contains('lockout') || errorStr.contains('locked')) {
         return LocalAuthResult.lockedOut();
-      } else if (errorStr.contains('unavailable') || errorStr.contains('notsupported')) {
+      } else if (errorStr.contains('unavailable') ||
+          errorStr.contains('notsupported')) {
         return LocalAuthResult.notAvailable(e.toString());
       }
       return LocalAuthResult.error(e.toString());

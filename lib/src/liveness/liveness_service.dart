@@ -15,8 +15,9 @@ class LivenessService {
     Duration? timeout,
     LivenessOptions? options,
   }) {
-    final List<LivenessChallenge> activeChallenges =
-        challenges ?? options?.challenges ?? const <LivenessChallenge>[
+    final List<LivenessChallenge> activeChallenges = challenges ??
+        options?.challenges ??
+        const <LivenessChallenge>[
           LivenessChallenge.blink,
           LivenessChallenge.turnLeft,
           LivenessChallenge.turnRight,

@@ -68,7 +68,8 @@ class _FaceRecognitionHubPageState extends State<FaceRecognitionHubPage> {
                     CircleAvatar(
                       backgroundColor: Colors.white.withOpacity(0.2),
                       radius: 28,
-                      child: const Icon(Icons.badge, color: Colors.white, size: 32),
+                      child: const Icon(Icons.badge,
+                          color: Colors.white, size: 32),
                     ),
                     const SizedBox(width: 16),
                     Expanded(
@@ -86,7 +87,8 @@ class _FaceRecognitionHubPageState extends State<FaceRecognitionHubPage> {
                           const SizedBox(height: 4),
                           const Text(
                             'Encrypted On-Device Biometric Vault (AES-GCM)',
-                            style: TextStyle(color: Colors.white70, fontSize: 13),
+                            style:
+                                TextStyle(color: Colors.white70, fontSize: 13),
                           ),
                         ],
                       ),
@@ -100,7 +102,8 @@ class _FaceRecognitionHubPageState extends State<FaceRecognitionHubPage> {
 
           Text(
             'Recognition & Matching Operations',
-            style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+            style: theme.textTheme.titleMedium
+                ?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 12),
 
@@ -109,10 +112,12 @@ class _FaceRecognitionHubPageState extends State<FaceRecognitionHubPage> {
             icon: Icons.person_add_alt_1,
             color: Colors.indigo,
             title: 'Enroll New Face Identity',
-            subtitle: 'Capture multi-frame embedding and store encrypted template',
+            subtitle:
+                'Capture multi-frame embedding and store encrypted template',
             onTap: () async {
               await Navigator.of(context).push(
-                MaterialPageRoute<void>(builder: (context) => const EnrollmentPage()),
+                MaterialPageRoute<void>(
+                    builder: (context) => const EnrollmentPage()),
               );
               _refresh();
             },
@@ -124,9 +129,11 @@ class _FaceRecognitionHubPageState extends State<FaceRecognitionHubPage> {
             icon: Icons.verified_user,
             color: Colors.green,
             title: '1:1 Live Face Verification',
-            subtitle: 'High-speed live camera matching against enrolled template',
+            subtitle:
+                'High-speed live camera matching against enrolled template',
             onTap: () => Navigator.of(context).push(
-              MaterialPageRoute<void>(builder: (context) => const AuthenticationPage()),
+              MaterialPageRoute<void>(
+                  builder: (context) => const AuthenticationPage()),
             ),
           ),
           const SizedBox(height: 10),
@@ -136,9 +143,11 @@ class _FaceRecognitionHubPageState extends State<FaceRecognitionHubPage> {
             icon: Icons.compare,
             color: Colors.orange,
             title: 'Compare 2 Still Face Images',
-            subtitle: 'Pick two images from gallery and compute cosine similarity',
+            subtitle:
+                'Pick two images from gallery and compute cosine similarity',
             onTap: () => Navigator.of(context).push(
-              MaterialPageRoute<void>(builder: (context) => const ComparePage()),
+              MaterialPageRoute<void>(
+                  builder: (context) => const ComparePage()),
             ),
           ),
           const SizedBox(height: 10),
@@ -151,7 +160,8 @@ class _FaceRecognitionHubPageState extends State<FaceRecognitionHubPage> {
             subtitle: 'View user IDs, test 1:1 match, or delete enrollments',
             onTap: () async {
               await Navigator.of(context).push(
-                MaterialPageRoute<void>(builder: (context) => const EnrolledUsersPage()),
+                MaterialPageRoute<void>(
+                    builder: (context) => const EnrolledUsersPage()),
               );
               _refresh();
             },
@@ -176,7 +186,8 @@ class _FaceRecognitionHubPageState extends State<FaceRecognitionHubPage> {
         side: BorderSide(color: Colors.grey.withOpacity(0.2)),
       ),
       child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         leading: CircleAvatar(
           backgroundColor: color.withOpacity(0.15),
           radius: 24,

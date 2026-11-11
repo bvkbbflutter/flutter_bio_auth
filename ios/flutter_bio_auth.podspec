@@ -1,13 +1,12 @@
 Pod::Spec.new do |s|
   s.name             = 'flutter_bio_auth'
-  s.version          = '0.1.0'
-  s.summary          = 'On-device face detection, liveness, and injectable 1:1 recognition/anti-spoof for Flutter.'
+  s.version          = '0.2.1'
+  s.summary          = 'On-device face intelligence, 1:1 face recognition, liveness, and delivery compliance for Flutter.'
   s.description      = <<-DESC
-Face detection/tracking/liveness via Vision (zero bundled models).
-Recognition and passive anti-spoof are injectable, model-driven, and
-loaded from a developer-supplied asset path.
+Modular on-device AI face intelligence, 1:1 face recognition, active liveness,
+facial expressions, and delivery partner compliance for Flutter.
                        DESC
-  s.homepage         = 'https://example.com/flutter_bio_auth'
+  s.homepage         = 'https://github.com/bvkbbflutter/flutter_bio_auth'
   s.license          = { :file => '../LICENSE' }
   s.author           = { 'Your Company' => 'you@example.com' }
   s.source           = { :path => '.' }

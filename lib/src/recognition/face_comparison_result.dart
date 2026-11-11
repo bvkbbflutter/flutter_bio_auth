@@ -13,7 +13,7 @@ class FaceComparisonResult {
   /// True if cosine similarity >= threshold.
   final bool isMatch;
 
-  /// Cosine similarity score [-1.0, 1.0].
+  /// Cosine similarity score in range (-1.0 to 1.0).
   final double similarity;
 
   /// The decision threshold applied.

@@ -67,7 +67,7 @@ class DeliveryComplianceResult {
   final bool isMotorcycleVerified;
   final double motorcycleConfidence;
 
-  /// List of safety items that failed compliance (e.g. ['Helmet', 'Uniform']).
+  /// List of safety items that failed compliance (e.g. 'Helmet', 'Uniform').
   final List<String> missingItems;
 
   /// Detailed per-gate compliance breakdown.
@@ -156,11 +156,21 @@ class DeliveryComplianceResult {
     ];
 
     if (explicitMissingItems == null) {
-      if (requireFace && !faceVerified) missing.add('Face Identity');
-      if (requireMotorcycle && !isMotorcycleVerified) missing.add('Motorcycle Check');
-      if (requireHelmet && !isWearingHelmet) missing.add('Helmet');
-      if (requireUniform && !isWearingUniform) missing.add('Uniform');
-      if (requireMask && !isWearingMask) missing.add('Face Mask');
+      if (requireFace && !faceVerified) {
+        missing.add('Face Identity');
+      }
+      if (requireMotorcycle && !isMotorcycleVerified) {
+        missing.add('Motorcycle Check');
+      }
+      if (requireHelmet && !isWearingHelmet) {
+        missing.add('Helmet');
+      }
+      if (requireUniform && !isWearingUniform) {
+        missing.add('Uniform');
+      }
+      if (requireMask && !isWearingMask) {
+        missing.add('Face Mask');
+      }
     }
 
     final bool ready = missing.isEmpty;
@@ -212,10 +222,12 @@ class DeliveryComplianceResult {
       uniformReason: 'Compliant brand uniform detected within color spectrum',
       isMotorcycleVerified: true,
       motorcycleConfidence: 0.90,
-      motorcycleReason: 'Rider two-wheeler context and upright posture confirmed',
+      motorcycleReason:
+          'Rider two-wheeler context and upright posture confirmed',
       isWearingMask: isWearingMask,
       maskConfidence: 0.15,
-      maskReason: isWearingMask ? 'Mask compliant' : 'Face unmasked for identification',
+      maskReason:
+          isWearingMask ? 'Mask compliant' : 'Face unmasked for identification',
       requireFace: true,
       requireHelmet: true,
       requireUniform: true,
@@ -237,16 +249,22 @@ class DeliveryComplianceResult {
     return DeliveryComplianceResult.evaluated(
       faceVerified: faceVerified,
       faceConfidence: faceVerified ? 0.85 : 0.20,
-      faceReason: faceVerified ? 'Face verified' : 'Face not recognized or aligned',
+      faceReason:
+          faceVerified ? 'Face verified' : 'Face not recognized or aligned',
       isWearingHelmet: isWearingHelmet,
       helmetConfidence: isWearingHelmet ? 0.88 : 0.25,
-      helmetReason: isWearingHelmet ? 'Helmet verified' : 'Helmet missing or not worn',
+      helmetReason:
+          isWearingHelmet ? 'Helmet verified' : 'Helmet missing or not worn',
       isWearingUniform: isWearingUniform,
       uniformConfidence: isWearingUniform ? 0.88 : 0.25,
-      uniformReason: isWearingUniform ? 'Uniform compliant' : 'Uniform color mismatch or missing',
+      uniformReason: isWearingUniform
+          ? 'Uniform compliant'
+          : 'Uniform color mismatch or missing',
       isMotorcycleVerified: isMotorcycleVerified,
       motorcycleConfidence: isMotorcycleVerified ? 0.88 : 0.25,
-      motorcycleReason: isMotorcycleVerified ? 'Vehicle verified' : 'Motorcycle not detected in frame',
+      motorcycleReason: isMotorcycleVerified
+          ? 'Vehicle verified'
+          : 'Motorcycle not detected in frame',
       isWearingMask: isWearingMask,
       maskConfidence: isWearingMask ? 0.85 : 0.15,
       maskReason: 'Mask status evaluated',

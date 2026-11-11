@@ -47,7 +47,9 @@ class _DeliveryCompliancePageState extends State<DeliveryCompliancePage> {
             color: result.isReady ? const Color(0xFF00E676) : Colors.orange,
           ),
           title: Text(
-            result.isReady ? 'Shift Check-In Approved!' : 'Inspection Incomplete',
+            result.isReady
+                ? 'Shift Check-In Approved!'
+                : 'Inspection Incomplete',
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
           content: SingleChildScrollView(
@@ -57,7 +59,8 @@ class _DeliveryCompliancePageState extends State<DeliveryCompliancePage> {
               children: <Widget>[
                 Text(
                   result.statusMessage,
-                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                  style: const TextStyle(
+                      fontSize: 14, fontWeight: FontWeight.w500),
                 ),
                 if (result.detectedUniformColor != null) ...<Widget>[
                   const SizedBox(height: 8),
@@ -75,7 +78,8 @@ class _DeliveryCompliancePageState extends State<DeliveryCompliancePage> {
                       const SizedBox(width: 6),
                       Text(
                         'Observed Shirt: ${UniformPresetExtension.describeColor(result.detectedUniformColor!)} (${UniformPresetExtension.colorToHex(result.detectedUniformColor!)})',
-                        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                        style: const TextStyle(
+                            fontSize: 12, fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),
@@ -90,7 +94,9 @@ class _DeliveryCompliancePageState extends State<DeliveryCompliancePage> {
                         Icon(
                           chk.passed ? Icons.check_circle : Icons.cancel,
                           size: 16,
-                          color: chk.passed ? const Color(0xFF00E676) : Colors.redAccent,
+                          color: chk.passed
+                              ? const Color(0xFF00E676)
+                              : Colors.redAccent,
                         ),
                         const SizedBox(width: 8),
                         Expanded(
@@ -99,13 +105,16 @@ class _DeliveryCompliancePageState extends State<DeliveryCompliancePage> {
                             children: <Widget>[
                               Text(
                                 chk.name,
-                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 13),
                               ),
                               Text(
                                 chk.reason,
                                 style: TextStyle(
                                   fontSize: 11,
-                                  color: chk.passed ? Colors.grey.shade700 : Colors.red.shade700,
+                                  color: chk.passed
+                                      ? Colors.grey.shade700
+                                      : Colors.red.shade700,
                                 ),
                               ),
                             ],
@@ -185,7 +194,8 @@ class _DeliveryCompliancePageState extends State<DeliveryCompliancePage> {
                 ),
                 const SizedBox(height: 16),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(20),
@@ -207,7 +217,8 @@ class _DeliveryCompliancePageState extends State<DeliveryCompliancePage> {
           // Brand Uniform Selector
           Text(
             'Target Delivery Brand Uniform',
-            style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+            style: theme.textTheme.titleMedium
+                ?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 12),
           Wrap(
@@ -234,7 +245,8 @@ class _DeliveryCompliancePageState extends State<DeliveryCompliancePage> {
           // Compliance Switches
           Text(
             'Safety & Verification Gates',
-            style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+            style: theme.textTheme.titleMedium
+                ?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
           SwitchListTile(
@@ -245,7 +257,8 @@ class _DeliveryCompliancePageState extends State<DeliveryCompliancePage> {
           ),
           SwitchListTile(
             title: const Text('Require Motorcycle / Two-Wheeler Context'),
-            subtitle: const Text('Rider vehicle presence and posture validation'),
+            subtitle:
+                const Text('Rider vehicle presence and posture validation'),
             value: _requireMotorcycle,
             onChanged: (val) => setState(() => _requireMotorcycle = val),
           ),

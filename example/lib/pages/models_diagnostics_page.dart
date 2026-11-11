@@ -43,7 +43,8 @@ class _ModelsDiagnosticsPageState extends State<ModelsDiagnosticsPage> {
     });
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Switched active model to "${model.displayName}". Persisted across restarts.'),
+        content: Text(
+            'Switched active model to "${model.displayName}". Persisted across restarts.'),
         backgroundColor: Colors.teal.shade800,
         behavior: SnackBarBehavior.floating,
       ),
@@ -66,7 +67,8 @@ class _ModelsDiagnosticsPageState extends State<ModelsDiagnosticsPage> {
   }
 
   void _showModelSelectionSheet() {
-    final recognitionModels = _models.where((m) => m.type == ModelType.faceRecognition).toList();
+    final recognitionModels =
+        _models.where((m) => m.type == ModelType.faceRecognition).toList();
 
     showModalBottomSheet<void>(
       context: context,
@@ -101,7 +103,8 @@ class _ModelsDiagnosticsPageState extends State<ModelsDiagnosticsPage> {
               const SizedBox(height: 16),
               ...recognitionModels.map((model) {
                 return RadioListTile<String>(
-                  title: Text(model.displayName, style: const TextStyle(fontWeight: FontWeight.bold)),
+                  title: Text(model.displayName,
+                      style: const TextStyle(fontWeight: FontWeight.bold)),
                   subtitle: Text(
                     '${model.embeddingDimensions}-d embeddings · Threshold ${model.calibratedThreshold}',
                   ),
@@ -169,7 +172,8 @@ class _ModelsDiagnosticsPageState extends State<ModelsDiagnosticsPage> {
                   children: <Widget>[
                     const Row(
                       children: <Widget>[
-                        Icon(Icons.verified, color: Color(0xFF00E676), size: 22),
+                        Icon(Icons.verified,
+                            color: Color(0xFF00E676), size: 22),
                         SizedBox(width: 8),
                         Text(
                           'ACTIVE RECOGNITION MODEL',
@@ -186,12 +190,14 @@ class _ModelsDiagnosticsPageState extends State<ModelsDiagnosticsPage> {
                       style: OutlinedButton.styleFrom(
                         foregroundColor: Colors.white,
                         side: const BorderSide(color: Colors.white54),
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 4),
                         minimumSize: Size.zero,
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       ),
                       onPressed: _showModelSelectionSheet,
-                      child: const Text('Switch', style: TextStyle(fontSize: 12)),
+                      child:
+                          const Text('Switch', style: TextStyle(fontSize: 12)),
                     ),
                   ],
                 ),
@@ -237,7 +243,8 @@ class _ModelsDiagnosticsPageState extends State<ModelsDiagnosticsPage> {
               children: <Widget>[
                 Row(
                   children: <Widget>[
-                    Icon(Icons.memory, color: theme.colorScheme.primary, size: 22),
+                    Icon(Icons.memory,
+                        color: theme.colorScheme.primary, size: 22),
                     const SizedBox(width: 8),
                     Text(
                       'Hardware Acceleration Engine',
@@ -258,11 +265,14 @@ class _ModelsDiagnosticsPageState extends State<ModelsDiagnosticsPage> {
                 Wrap(
                   spacing: 8,
                   runSpacing: 6,
-                  children: (caps?.supportedDelegates ?? <String>['CPU', 'NNAPI', 'GPU'])
+                  children: (caps?.supportedDelegates ??
+                          <String>['CPU', 'NNAPI', 'GPU'])
                       .map((del) => Chip(
-                            label: Text(del, style: const TextStyle(fontSize: 11)),
+                            label:
+                                Text(del, style: const TextStyle(fontSize: 11)),
                             padding: EdgeInsets.zero,
-                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            materialTapTargetSize:
+                                MaterialTapTargetSize.shrinkWrap,
                           ))
                       .toList(),
                 ),
@@ -277,7 +287,8 @@ class _ModelsDiagnosticsPageState extends State<ModelsDiagnosticsPage> {
             children: <Widget>[
               Text(
                 'Available AI Model Catalog',
-                style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                style: theme.textTheme.titleMedium
+                    ?.copyWith(fontWeight: FontWeight.bold),
               ),
               Text(
                 '${_models.length} Models',
@@ -289,7 +300,8 @@ class _ModelsDiagnosticsPageState extends State<ModelsDiagnosticsPage> {
 
           ..._models.map((model) {
             final bool isActive = activeModel?.id == model.id;
-            final bool isTestingThis = _isBenchmarking && _benchmarkingModelId == model.id;
+            final bool isTestingThis =
+                _isBenchmarking && _benchmarkingModelId == model.id;
 
             return Card(
               elevation: 0,
@@ -297,7 +309,9 @@ class _ModelsDiagnosticsPageState extends State<ModelsDiagnosticsPage> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
                 side: BorderSide(
-                  color: isActive ? const Color(0xFF00E676) : Colors.grey.withOpacity(0.2),
+                  color: isActive
+                      ? const Color(0xFF00E676)
+                      : Colors.grey.withOpacity(0.2),
                   width: isActive ? 2 : 1,
                 ),
               ),
@@ -316,28 +330,33 @@ class _ModelsDiagnosticsPageState extends State<ModelsDiagnosticsPage> {
                             children: <Widget>[
                               Text(
                                 model.displayName,
-                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 15),
                               ),
                               const SizedBox(height: 2),
                               Text(
                                 'Role: ${model.type.name} · v${model.version}',
-                                style: const TextStyle(color: Colors.grey, fontSize: 12),
+                                style: const TextStyle(
+                                    color: Colors.grey, fontSize: 12),
                               ),
                             ],
                           ),
                         ),
                         if (isActive)
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 4),
                             decoration: BoxDecoration(
                               color: const Color(0xFF00E676).withOpacity(0.15),
                               borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: const Color(0xFF00E676)),
+                              border:
+                                  Border.all(color: const Color(0xFF00E676)),
                             ),
                             child: const Row(
                               mainAxisSize: MainAxisSize.min,
                               children: <Widget>[
-                                Icon(Icons.check, size: 14, color: Color(0xFF00C853)),
+                                Icon(Icons.check,
+                                    size: 14, color: Color(0xFF00C853)),
                                 SizedBox(width: 4),
                                 Text(
                                   'ACTIVE',
@@ -360,11 +379,16 @@ class _ModelsDiagnosticsPageState extends State<ModelsDiagnosticsPage> {
                       runSpacing: 4,
                       children: <Widget>[
                         Text('Dimensions: ${model.embeddingDimensions}-d',
-                            style: const TextStyle(color: Colors.grey, fontSize: 12)),
-                        Text('Calibrated Threshold: ${model.calibratedThreshold}',
-                            style: const TextStyle(color: Colors.grey, fontSize: 12)),
-                        Text('Input: ${model.inputSize.width.toInt()}x${model.inputSize.height.toInt()}',
-                            style: const TextStyle(color: Colors.grey, fontSize: 12)),
+                            style: const TextStyle(
+                                color: Colors.grey, fontSize: 12)),
+                        Text(
+                            'Calibrated Threshold: ${model.calibratedThreshold}',
+                            style: const TextStyle(
+                                color: Colors.grey, fontSize: 12)),
+                        Text(
+                            'Input: ${model.inputSize.width.toInt()}x${model.inputSize.height.toInt()}',
+                            style: const TextStyle(
+                                color: Colors.grey, fontSize: 12)),
                       ],
                     ),
                     const SizedBox(height: 14),
@@ -375,26 +399,34 @@ class _ModelsDiagnosticsPageState extends State<ModelsDiagnosticsPage> {
                       runSpacing: 8,
                       crossAxisAlignment: WrapCrossAlignment.center,
                       children: <Widget>[
-                        if (!isActive && model.type == ModelType.faceRecognition)
+                        if (!isActive &&
+                            model.type == ModelType.faceRecognition)
                           FilledButton.icon(
                             style: FilledButton.styleFrom(
                               backgroundColor: Colors.teal,
-                              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 14, vertical: 8),
                             ),
                             onPressed: () => _switchActiveModel(model),
-                            icon: const Icon(Icons.check_circle_outline, size: 16),
-                            label: const Text('Set as Active', style: TextStyle(fontSize: 12)),
+                            icon: const Icon(Icons.check_circle_outline,
+                                size: 16),
+                            label: const Text('Set as Active',
+                                style: TextStyle(fontSize: 12)),
                           ),
                         FilledButton.tonalIcon(
                           style: FilledButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 8),
                           ),
-                          onPressed: _isBenchmarking ? null : () => _runBenchmark(model),
+                          onPressed: _isBenchmarking
+                              ? null
+                              : () => _runBenchmark(model),
                           icon: isTestingThis
                               ? const SizedBox(
                                   width: 14,
                                   height: 14,
-                                  child: CircularProgressIndicator(strokeWidth: 2),
+                                  child:
+                                      CircularProgressIndicator(strokeWidth: 2),
                                 )
                               : const Icon(Icons.speed, size: 16),
                           label: Text(
@@ -431,15 +463,22 @@ class _ModelsDiagnosticsPageState extends State<ModelsDiagnosticsPage> {
                         SizedBox(width: 8),
                         Text(
                           'Benchmark Diagnostics Report',
-                          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.teal, fontSize: 15),
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.teal,
+                              fontSize: 15),
                         ),
                       ],
                     ),
                     const SizedBox(height: 10),
-                    Text('Evaluated Model: ${bench.modelId}', style: const TextStyle(fontWeight: FontWeight.w600)),
-                    Text('Average Inference Latency: ${bench.averageInferenceTimeMs} ms / frame'),
-                    Text('Hardware Execution Backend: ${bench.executionBackend}'),
-                    Text('Measurement Iterations: ${bench.iterations} consecutive runs'),
+                    Text('Evaluated Model: ${bench.modelId}',
+                        style: const TextStyle(fontWeight: FontWeight.w600)),
+                    Text(
+                        'Average Inference Latency: ${bench.averageInferenceTimeMs} ms / frame'),
+                    Text(
+                        'Hardware Execution Backend: ${bench.executionBackend}'),
+                    Text(
+                        'Measurement Iterations: ${bench.iterations} consecutive runs'),
                   ],
                 ),
               ),
@@ -459,7 +498,8 @@ class _ModelsDiagnosticsPageState extends State<ModelsDiagnosticsPage> {
       ),
       child: Text(
         label,
-        style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w500),
+        style: const TextStyle(
+            color: Colors.white, fontSize: 11, fontWeight: FontWeight.w500),
       ),
     );
   }

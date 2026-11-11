@@ -105,7 +105,8 @@ class _FaceAuthenticationViewState extends State<FaceAuthenticationView> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Icon(Icons.error_outline, size: 60, color: theme.colorScheme.error),
+              Icon(Icons.error_outline,
+                  size: 60, color: theme.colorScheme.error),
               const SizedBox(height: 16),
               Text(
                 'Authentication Error',
@@ -144,7 +145,8 @@ class _FaceAuthenticationViewState extends State<FaceAuthenticationView> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Icon(auth ? Icons.verified_user : Icons.cancel_outlined, size: 64, color: color),
+              Icon(auth ? Icons.verified_user : Icons.cancel_outlined,
+                  size: 64, color: color),
               const SizedBox(height: 16),
               Text(
                 auth ? 'Identity Verified!' : 'Authentication Failed',
@@ -164,7 +166,8 @@ class _FaceAuthenticationViewState extends State<FaceAuthenticationView> {
               const SizedBox(height: 16),
               Text(
                 'Similarity Score: ${(_result!.similarity * 100).toStringAsFixed(1)}%',
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                style:
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
               const SizedBox(height: 20),
               FilledButton.icon(

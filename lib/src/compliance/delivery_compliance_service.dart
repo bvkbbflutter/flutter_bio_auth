@@ -49,8 +49,10 @@ class DeliveryComplianceService {
       }
     }
 
-    final Color effectiveColor = clothingColor ?? options.targetUniform.primaryColor;
-    final bool uniformMatches = uniformDetected && options.targetUniform.matchesColor(effectiveColor);
+    final Color effectiveColor =
+        clothingColor ?? options.targetUniform.primaryColor;
+    final bool uniformMatches =
+        uniformDetected && options.targetUniform.matchesColor(effectiveColor);
 
     return DeliveryComplianceResult.evaluated(
       faceVerified: faceMatched,
@@ -77,7 +79,9 @@ class DeliveryComplianceService {
       maskConfidence: maskDetected ? 0.85 : 0.15,
       maskReason: maskDetected
           ? 'Face mask verified'
-          : (options.requireMask ? 'Mask missing: Mandatory for compliance' : 'Unmasked for face verification'),
+          : (options.requireMask
+              ? 'Mask missing: Mandatory for compliance'
+              : 'Unmasked for face verification'),
       requireFace: options.requireFaceVerification,
       requireHelmet: options.requireHelmet,
       requireUniform: true,
@@ -120,8 +124,10 @@ class DeliveryComplianceService {
                   : 'No rider face detected in camera frame');
 
           // 2. Helmet check: evaluates live helmet detector or upright posture
-          final bool helmetDetected = isHelmetDetected ?? (faceInFrame && ((pitch?.abs() ?? 0) < 32));
-          final bool helmetPass = !options.requireHelmet || (faceInFrame && helmetDetected);
+          final bool helmetDetected =
+              isHelmetDetected ?? (faceInFrame && ((pitch?.abs() ?? 0) < 32));
+          final bool helmetPass =
+              !options.requireHelmet || (faceInFrame && helmetDetected);
           final double helmetConf = helmetDetected ? 0.90 : 0.20;
           final String helmetReason = !options.requireHelmet
               ? 'Safety helmet optional (turned OFF in settings)'
@@ -145,18 +151,24 @@ class DeliveryComplianceService {
           } else if (!hasColorSample) {
             uniformReason = 'Sampling rider clothing color below chin…';
           } else if (uniformPass) {
-            final String colorName = UniformPresetExtension.describeColor(effectiveColor);
-            final String hex = UniformPresetExtension.colorToHex(effectiveColor);
-            uniformReason = 'Compliant $colorName ($hex) matches ${options.targetUniform.displayName}';
+            final String colorName =
+                UniformPresetExtension.describeColor(effectiveColor);
+            final String hex =
+                UniformPresetExtension.colorToHex(effectiveColor);
+            uniformReason =
+                'Compliant $colorName ($hex) matches ${options.targetUniform.displayName}';
           } else {
-            final String observedName = UniformPresetExtension.describeColor(effectiveColor);
-            final String observedHex = UniformPresetExtension.colorToHex(effectiveColor);
+            final String observedName =
+                UniformPresetExtension.describeColor(effectiveColor);
+            final String observedHex =
+                UniformPresetExtension.colorToHex(effectiveColor);
             uniformReason =
                 'Uniform Mismatch: Observed $observedName ($observedHex). Expected ${options.targetUniform.displayName} (${options.targetUniform.primaryColorHex})';
           }
 
           // 4. Motorcycle verification
-          final bool motorcyclePass = !options.requireMotorcycle || (faceInFrame && helmetPass);
+          final bool motorcyclePass =
+              !options.requireMotorcycle || (faceInFrame && helmetPass);
           final double motorcycleConf = motorcyclePass ? 0.88 : 0.20;
           final String motorcycleReason = !options.requireMotorcycle
               ? 'Motorcycle check optional (turned OFF in settings)'
@@ -202,8 +214,10 @@ class DeliveryComplianceService {
           }
         }
 
-        detectionSub = FaceBiometricPlatform.instance.detectionStream.listen((data) {
-          final bool hasFace = data['hasFace'] == true || (data['faceCount'] as num? ?? 0) > 0;
+        detectionSub =
+            FaceBiometricPlatform.instance.detectionStream.listen((data) {
+          final bool hasFace =
+              data['hasFace'] == true || (data['faceCount'] as num? ?? 0) > 0;
           final double? yaw = (data['yawDegrees'] as num?)?.toDouble();
           final double? pitch = (data['pitchDegrees'] as num?)?.toDouble();
 
@@ -217,7 +231,8 @@ class DeliveryComplianceService {
                 )
               : null;
 
-          final bool? liveHelmet = data.containsKey('hasHelmet') ? data['hasHelmet'] == true : null;
+          final bool? liveHelmet =
+              data.containsKey('hasHelmet') ? data['hasHelmet'] == true : null;
 
           emitEvaluation(
             faceInFrame: hasFace,

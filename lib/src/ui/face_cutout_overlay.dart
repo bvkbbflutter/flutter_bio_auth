@@ -98,7 +98,8 @@ class _CutoutPainter extends CustomPainter {
     // 1. Draw scrim with transparent elliptical hole
     final Path backgroundPath = Path()..addRect(fullRect);
     final Path holePath = Path()..addOval(ovalRect);
-    final Path combinedPath = Path.combine(PathOperation.difference, backgroundPath, holePath);
+    final Path combinedPath =
+        Path.combine(PathOperation.difference, backgroundPath, holePath);
 
     final Paint scrimPaint = Paint()
       ..color = scrimColor
@@ -135,20 +136,28 @@ class _CutoutPainter extends CustomPainter {
     final double inset = 4.0;
 
     // Top-left
-    canvas.drawLine(Offset(r.left - inset, r.top + len), Offset(r.left - inset, r.top - inset), bracketPaint);
-    canvas.drawLine(Offset(r.left - inset, r.top - inset), Offset(r.left + len, r.top - inset), bracketPaint);
+    canvas.drawLine(Offset(r.left - inset, r.top + len),
+        Offset(r.left - inset, r.top - inset), bracketPaint);
+    canvas.drawLine(Offset(r.left - inset, r.top - inset),
+        Offset(r.left + len, r.top - inset), bracketPaint);
 
     // Top-right
-    canvas.drawLine(Offset(r.right + inset, r.top + len), Offset(r.right + inset, r.top - inset), bracketPaint);
-    canvas.drawLine(Offset(r.right + inset, r.top - inset), Offset(r.right - len, r.top - inset), bracketPaint);
+    canvas.drawLine(Offset(r.right + inset, r.top + len),
+        Offset(r.right + inset, r.top - inset), bracketPaint);
+    canvas.drawLine(Offset(r.right + inset, r.top - inset),
+        Offset(r.right - len, r.top - inset), bracketPaint);
 
     // Bottom-left
-    canvas.drawLine(Offset(r.left - inset, r.bottom - len), Offset(r.left - inset, r.bottom + inset), bracketPaint);
-    canvas.drawLine(Offset(r.left - inset, r.bottom + inset), Offset(r.left + len, r.bottom + inset), bracketPaint);
+    canvas.drawLine(Offset(r.left - inset, r.bottom - len),
+        Offset(r.left - inset, r.bottom + inset), bracketPaint);
+    canvas.drawLine(Offset(r.left - inset, r.bottom + inset),
+        Offset(r.left + len, r.bottom + inset), bracketPaint);
 
     // Bottom-right
-    canvas.drawLine(Offset(r.right + inset, r.bottom - len), Offset(r.right + inset, r.bottom + inset), bracketPaint);
-    canvas.drawLine(Offset(r.right + inset, r.bottom + inset), Offset(r.right - len, r.bottom + inset), bracketPaint);
+    canvas.drawLine(Offset(r.right + inset, r.bottom - len),
+        Offset(r.right + inset, r.bottom + inset), bracketPaint);
+    canvas.drawLine(Offset(r.right + inset, r.bottom + inset),
+        Offset(r.right - len, r.bottom + inset), bracketPaint);
   }
 
   @override

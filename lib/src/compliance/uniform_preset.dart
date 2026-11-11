@@ -107,7 +107,7 @@ extension UniformPresetExtension on UniformPreset {
     return '#${color.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}';
   }
 
-  /// Target Hue range in HSV color space [0..360].
+  /// Target Hue range in HSV color space (0 to 360).
   List<double> get targetHueRange {
     switch (this) {
       case UniformPreset.zeptoPurple:

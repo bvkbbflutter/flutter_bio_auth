@@ -111,7 +111,8 @@ class _FaceLivenessViewState extends State<FaceLivenessView> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Icon(Icons.error_outline, size: 60, color: theme.colorScheme.error),
+              Icon(Icons.error_outline,
+                  size: 60, color: theme.colorScheme.error),
               const SizedBox(height: 16),
               Text(
                 'Liveness Error',
@@ -150,7 +151,8 @@ class _FaceLivenessViewState extends State<FaceLivenessView> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Icon(passed ? Icons.verified_user : Icons.cancel_outlined, size: 64, color: color),
+              Icon(passed ? Icons.verified_user : Icons.cancel_outlined,
+                  size: 64, color: color),
               const SizedBox(height: 16),
               Text(
                 passed ? 'Liveness Confirmed!' : 'Liveness Incomplete',
@@ -172,7 +174,8 @@ class _FaceLivenessViewState extends State<FaceLivenessView> {
               const SizedBox(height: 16),
               Text(
                 'Overall Score: ${(_result!.overallScore * 100).toStringAsFixed(0)}%',
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                style:
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
               const SizedBox(height: 20),
               FilledButton.icon(

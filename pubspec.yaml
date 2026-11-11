@@ -1,8 +1,7 @@
 name: flutter_bio_auth
-description: >
-  Modular, AI-powered on-device face intelligence, 1:1 face recognition,
-  active liveness, facial expressions, delivery partner compliance (Zepto/helmet/uniform),
-  and local device biometrics for Flutter.
+description: >-
+  Modular, on-device AI face intelligence, 1:1 face recognition, active
+  liveness, facial expressions, delivery compliance, and local device biometrics.
 version: 0.2.1
 
 homepage: https://github.com/bvkbbflutter/flutter_bio_auth

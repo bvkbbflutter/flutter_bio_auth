@@ -46,7 +46,6 @@ class _ExpressionHubPageState extends State<ExpressionHubPage> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Facial Expression & Sentiment AI'),
@@ -109,7 +108,8 @@ class _ExpressionHubPageState extends State<ExpressionHubPage> {
             icon: Icons.add_reaction,
             color: Colors.pink,
             title: 'Interactive Smile Verification',
-            subtitle: 'Guided turnaround smile challenge with animated progress',
+            subtitle:
+                'Guided turnaround smile challenge with animated progress',
             onTap: _openSmileChallenge,
           ),
           const SizedBox(height: 12),
@@ -118,7 +118,8 @@ class _ExpressionHubPageState extends State<ExpressionHubPage> {
             icon: Icons.camera_front,
             color: Colors.purple,
             title: 'Instant Snapshot Sentiment Analysis',
-            subtitle: 'Single-frame snapshot classification and sentiment probabilities',
+            subtitle:
+                'Single-frame snapshot classification and sentiment probabilities',
             onTap: () async {
               final result = await FaceAI.detectExpression();
               if (!context.mounted) return;
@@ -131,16 +132,22 @@ class _ExpressionHubPageState extends State<ExpressionHubPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text('Dominant: ${result.expression.name.toUpperCase()}',
-                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16)),
                       Text('Confidence: ${(result.confidence * 100).toInt()}%'),
                       const SizedBox(height: 12),
-                      Text('Smile: ${((result.smilingProbability ?? 0.0) * 100).toInt()}%'),
-                      Text('Left Eye Open: ${((result.leftEyeOpenProbability ?? 1.0) * 100).toInt()}%'),
-                      Text('Right Eye Open: ${((result.rightEyeOpenProbability ?? 1.0) * 100).toInt()}%'),
+                      Text(
+                          'Smile: ${((result.smilingProbability ?? 0.0) * 100).toInt()}%'),
+                      Text(
+                          'Left Eye Open: ${((result.leftEyeOpenProbability ?? 1.0) * 100).toInt()}%'),
+                      Text(
+                          'Right Eye Open: ${((result.rightEyeOpenProbability ?? 1.0) * 100).toInt()}%'),
                     ],
                   ),
                   actions: <Widget>[
-                    TextButton(onPressed: () => Navigator.of(ctx).pop(), child: const Text('OK')),
+                    TextButton(
+                        onPressed: () => Navigator.of(ctx).pop(),
+                        child: const Text('OK')),
                   ],
                 ),
               );
@@ -166,7 +173,8 @@ class _ExpressionHubPageState extends State<ExpressionHubPage> {
         side: BorderSide(color: Colors.grey.withOpacity(0.2)),
       ),
       child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         leading: CircleAvatar(
           backgroundColor: color.withOpacity(0.15),
           radius: 24,

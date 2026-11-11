@@ -46,12 +46,14 @@ class LocalAuthResult {
 
   factory LocalAuthResult.lockedOut() => const LocalAuthResult(
         status: LocalAuthStatus.lockedOut,
-        message: 'Device biometric authentication is locked out due to too many failed attempts.',
+        message:
+            'Device biometric authentication is locked out due to too many failed attempts.',
       );
 
   factory LocalAuthResult.notAvailable([String? message]) => LocalAuthResult(
         status: LocalAuthStatus.notAvailable,
-        message: message ?? 'Biometric authentication hardware is not available.',
+        message:
+            message ?? 'Biometric authentication hardware is not available.',
       );
 
   factory LocalAuthResult.error(String message) => LocalAuthResult(

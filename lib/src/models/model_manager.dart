@@ -83,7 +83,13 @@ class FaceModelManager {
         source: ModelSource.asset('assets/models/expression.tflite'),
         version: '3.1.0',
         labels: <String>[
-          'neutral', 'smile', 'blink', 'wink', 'surprise', 'sad', 'angry'
+          'neutral',
+          'smile',
+          'blink',
+          'wink',
+          'surprise',
+          'sad',
+          'angry'
         ],
       ),
     );
@@ -112,7 +118,8 @@ class FaceModelManager {
   Future<void> activate(ModelType type, {required String modelId}) async {
     final ModelConfig? config = _registeredModels[modelId];
     if (config == null) {
-      throw ArgumentError('Model $modelId is not registered in FaceModelManager.');
+      throw ArgumentError(
+          'Model $modelId is not registered in FaceModelManager.');
     }
     _activeModels[type] = modelId;
 
