@@ -53,9 +53,10 @@ class _DeliveryComplianceViewState extends State<DeliveryComplianceView> {
     _subscription = FaceAI.compliance
         .startComplianceStream(
           options: widget.options,
+          // null allows live camera frame color sampling; non-null overrides for simulation
           clothingColor: _simulatingNonCompliantColor
               ? const Color(0xFF2E7D32) // Contrasting green clothing
-              : widget.options.targetUniform.primaryColor,
+              : null,
         )
         .listen((result) {
       if (mounted) {
@@ -260,6 +261,77 @@ class _DeliveryComplianceViewState extends State<DeliveryComplianceView> {
                       passed: maskCheckPassed,
                       reason: result?.maskReason ?? 'Mask evaluation',
                       required: true,
+                    ),
+                  ],
+
+                  // Live Detected Shirt Color vs Brand Swatch
+                  if (result?.detectedUniformColor != null) ...<Widget>[
+                    const SizedBox(height: 10),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.08),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: uniformPassed
+                              ? const Color(0xFF00E676)
+                              : Colors.redAccent.withOpacity(0.6),
+                        ),
+                      ),
+                      child: Row(
+                        children: <Widget>[
+                          Container(
+                            width: 22,
+                            height: 22,
+                            decoration: BoxDecoration(
+                              color: result!.detectedUniformColor,
+                              shape: BoxShape.circle,
+                              border: Border.all(color: Colors.white, width: 1.5),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(
+                                  'Detected Shirt: ${UniformPresetExtension.describeColor(result.detectedUniformColor!)} (${UniformPresetExtension.colorToHex(result.detectedUniformColor!)})',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  'Target: ${widget.options.targetUniform.displayName} (${widget.options.targetUniform.primaryColorHex})',
+                                  style: TextStyle(
+                                    color: uniformPassed
+                                        ? const Color(0xFF00E676)
+                                        : Colors.orangeAccent,
+                                    fontSize: 10,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: (uniformPassed ? const Color(0xFF00E676) : Colors.redAccent)
+                                  .withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Text(
+                              uniformPassed ? 'MATCH' : 'MISMATCH',
+                              style: TextStyle(
+                                color: uniformPassed ? const Color(0xFF00E676) : Colors.redAccent,
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
 

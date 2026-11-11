@@ -84,6 +84,29 @@ extension UniformPresetExtension on UniformPreset {
     }
   }
 
+  /// Describes the common human-readable color family of an observed color.
+  static String describeColor(Color color) {
+    final HSVColor hsv = HSVColor.fromColor(color);
+    if (hsv.value < 0.18) return 'Dark / Black';
+    if (hsv.saturation < 0.18 && hsv.value > 0.70) return 'White / Off-White';
+    if (hsv.saturation < 0.20) return 'Grey / Neutral';
+    final double h = hsv.hue;
+    if (h >= 345 || h < 15) return 'Red';
+    if (h >= 15 && h < 42) return 'Orange';
+    if (h >= 42 && h < 68) return 'Yellow';
+    if (h >= 68 && h < 165) return 'Green';
+    if (h >= 165 && h < 195) return 'Cyan';
+    if (h >= 195 && h < 255) return 'Blue';
+    if (h >= 255 && h < 295) return 'Purple / Violet';
+    if (h >= 295 && h < 345) return 'Pink / Magenta';
+    return 'Colored';
+  }
+
+  /// Converts a Color to a hex representation (e.g. #5200FF).
+  static String colorToHex(Color color) {
+    return '#${color.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}';
+  }
+
   /// Target Hue range in HSV color space [0..360].
   List<double> get targetHueRange {
     switch (this) {

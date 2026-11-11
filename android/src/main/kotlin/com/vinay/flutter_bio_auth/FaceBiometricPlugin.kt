@@ -331,8 +331,89 @@ class FaceBiometricPlugin :
         val manager = CameraManager(binding.applicationContext, owner)
         cameraManager = manager
         activeView?.attachCameraManager(manager)
-        manager.requiresBitmapProvider = { false }
-        manager.onFrame = { _, detection, _ ->
+        manager.requiresBitmapProvider = { true }
+        manager.onFrame = { bitmap, detection, _ ->
+            var torsoR = 0
+            var torsoG = 0
+            var torsoB = 0
+            var hasTorso = false
+            var hasHelmet = false
+            var helmetScore = 0.0
+
+            val box = detection.boundingBox
+            if (box != null && bitmap != null && !detection.hasNoFace) {
+                val bWidth = bitmap.width
+                val bHeight = bitmap.height
+                val faceW = (box.width * bWidth).toInt().coerceAtLeast(1)
+                val faceH = (box.height * bHeight).toInt().coerceAtLeast(1)
+                val faceLeft = (box.left * bWidth).toInt()
+                val faceTop = (box.top * bHeight).toInt()
+                val faceBottom = faceTop + faceH
+                val faceCenterX = faceLeft + faceW / 2
+
+                // 1. Torso sampling (below chin)
+                val torsoTop = (faceBottom + faceH * 0.18).toInt().coerceIn(0, bHeight - 1)
+                val torsoBottom = (faceBottom + faceH * 1.55).toInt().coerceIn(torsoTop + 1, bHeight)
+                val torsoWidth = (faceW * 0.90).toInt().coerceIn(10, bWidth)
+                val torsoLeft = (faceCenterX - torsoWidth / 2).coerceIn(0, bWidth - torsoWidth)
+                val torsoRight = (torsoLeft + torsoWidth).coerceIn(torsoLeft + 1, bWidth)
+
+                if (torsoBottom > torsoTop && torsoRight > torsoLeft) {
+                    var rSum = 0L
+                    var gSum = 0L
+                    var bSum = 0L
+                    var count = 0
+                    val stepX = ((torsoRight - torsoLeft) / 12).coerceAtLeast(1)
+                    val stepY = ((torsoBottom - torsoTop) / 12).coerceAtLeast(1)
+
+                    for (y in torsoTop until torsoBottom step stepY) {
+                        for (x in torsoLeft until torsoRight step stepX) {
+                            val pixel = bitmap.getPixel(x, y)
+                            rSum += (pixel shr 16) and 0xFF
+                            gSum += (pixel shr 8) and 0xFF
+                            bSum += pixel and 0xFF
+                            count++
+                        }
+                    }
+                    if (count > 0) {
+                        torsoR = (rSum / count).toInt()
+                        torsoG = (gSum / count).toInt()
+                        torsoB = (bSum / count).toInt()
+                        hasTorso = true
+                    }
+                }
+
+                // 2. Headgear / Helmet analysis (above forehead)
+                val headTop = (faceTop - faceH * 0.45).toInt().coerceIn(0, bHeight - 1)
+                val headBottom = (faceTop - faceH * 0.05).toInt().coerceIn(headTop + 1, bHeight)
+                val headLeft = (faceCenterX - faceW * 0.40).toInt().coerceIn(0, bWidth - 1)
+                val headRight = (faceCenterX + faceW * 0.40).toInt().coerceIn(headLeft + 1, bWidth)
+
+                if (headBottom > headTop && headRight > headLeft) {
+                    var nonSkinCount = 0
+                    var totalHead = 0
+                    val hStepX = ((headRight - headLeft) / 8).coerceAtLeast(1)
+                    val hStepY = ((headBottom - headTop) / 8).coerceAtLeast(1)
+
+                    for (y in headTop until headBottom step hStepY) {
+                        for (x in headLeft until headRight step hStepX) {
+                            val pixel = bitmap.getPixel(x, y)
+                            val r = (pixel shr 16) and 0xFF
+                            val g = (pixel shr 8) and 0xFF
+                            val b = pixel and 0xFF
+                            val isSkin = r > 95 && g > 40 && b > 20 &&
+                                    (r - g) > 15 && r > g && g > b
+                            if (!isSkin) nonSkinCount++
+                            totalHead++
+                        }
+                    }
+                    if (totalHead > 0) {
+                        helmetScore = nonSkinCount.toDouble() / totalHead
+                        hasHelmet = helmetScore > 0.45
+                    }
+                }
+            }
+
             val payload = mapOf(
                 "state" to if (detection.hasNoFace) StateName.DETECTING_FACE.wireValue else StateName.FACE_DETECTED.wireValue,
                 "smilingProbability" to (detection.smilingProbability ?: 0.0),
@@ -343,6 +424,12 @@ class FaceBiometricPlugin :
                 "rollDegrees" to (detection.rollDegrees ?: 0.0),
                 "faceCount" to detection.faceCount,
                 "hasFace" to !detection.hasNoFace,
+                "hasTorso" to hasTorso,
+                "torsoR" to torsoR,
+                "torsoG" to torsoG,
+                "torsoB" to torsoB,
+                "hasHelmet" to hasHelmet,
+                "helmetScore" to helmetScore,
             )
             val runnable = Runnable { eventSink?.success(payload) }
             activity?.runOnUiThread(runnable) ?: runnable.run()

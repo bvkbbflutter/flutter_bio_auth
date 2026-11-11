@@ -106,41 +106,67 @@ class DeliveryComplianceService {
           double? yaw,
           double? pitch,
           Color? observedColor,
+          bool? isHelmetDetected,
         }) {
           inspectionFrames++;
 
-          // Realistic safety evaluation grounded in face presence and pose
-          final bool facePass = faceInFrame;
-          final double faceConf = faceInFrame ? 0.92 : 0.0;
-          final String faceReason = faceInFrame
-              ? 'Rider face aligned in viewport'
-              : 'No rider face detected in camera frame';
-
-          // Helmet check: requires face in frame with upright pitch
-          final bool helmetPass = faceInFrame && ((pitch?.abs() ?? 0) < 35);
-          final double helmetConf = helmetPass ? 0.90 : 0.25;
-          final String helmetReason = helmetPass
-              ? 'Motorcycle helmet detected and aligned'
-              : (faceInFrame ? 'Helmet not securely fastened' : 'Cannot verify helmet: No rider detected');
-
-          // Uniform verification: checks observed clothing against target brand
-          final Color effectiveColor = observedColor ?? clothingColor ?? options.targetUniform.primaryColor;
-          final bool uniformPass = faceInFrame && options.targetUniform.matchesColor(effectiveColor);
-          final double uniformConf = uniformPass ? 0.91 : 0.20;
-          final String uniformReason = uniformPass
-              ? 'Compliant ${options.targetUniform.displayName} verified (${options.targetUniform.primaryColorHex})'
-              : 'Uniform mismatch: Expected ${options.targetUniform.displayName} (${options.targetUniform.primaryColorHex}), detected non-compliant clothing';
-
-          // Motorcycle verification: validates two-wheeler posture and rider context
-          final bool motorcyclePass = faceInFrame && helmetPass;
-          final double motorcycleConf = motorcyclePass ? 0.88 : 0.20;
-          final String motorcycleReason = motorcyclePass
-              ? 'Motorcycle two-wheeler context and rider stance confirmed'
+          // 1. Face Identity Check
+          final bool facePass = !options.requireFaceVerification || faceInFrame;
+          final double faceConf = faceInFrame ? 0.94 : 0.0;
+          final String faceReason = !options.requireFaceVerification
+              ? 'Face verification optional (turned OFF in settings)'
               : (faceInFrame
-                  ? 'Motorcycle not detected in frame. Please capture rider with vehicle'
-                  : 'Cannot verify vehicle: No rider in frame');
+                  ? 'Rider face aligned in viewport'
+                  : 'No rider face detected in camera frame');
 
-          // Mask verification
+          // 2. Helmet check: evaluates live helmet detector or upright posture
+          final bool helmetDetected = isHelmetDetected ?? (faceInFrame && ((pitch?.abs() ?? 0) < 32));
+          final bool helmetPass = !options.requireHelmet || (faceInFrame && helmetDetected);
+          final double helmetConf = helmetDetected ? 0.90 : 0.20;
+          final String helmetReason = !options.requireHelmet
+              ? 'Safety helmet optional (turned OFF in settings)'
+              : (helmetPass
+                  ? 'Motorcycle safety helmet verified'
+                  : (faceInFrame
+                      ? 'Helmet missing or not securely fastened'
+                      : 'Cannot verify helmet: No rider detected'));
+
+          // 3. Uniform verification: checks observed clothing against target brand
+          final Color? effectiveColor = observedColor;
+          final bool hasColorSample = effectiveColor != null;
+          final bool uniformPass = faceInFrame &&
+              hasColorSample &&
+              options.targetUniform.matchesColor(effectiveColor);
+          final double uniformConf = uniformPass ? 0.92 : 0.20;
+
+          final String uniformReason;
+          if (!faceInFrame) {
+            uniformReason = 'Cannot verify uniform: No rider in frame';
+          } else if (!hasColorSample) {
+            uniformReason = 'Sampling rider clothing color below chin…';
+          } else if (uniformPass) {
+            final String colorName = UniformPresetExtension.describeColor(effectiveColor);
+            final String hex = UniformPresetExtension.colorToHex(effectiveColor);
+            uniformReason = 'Compliant $colorName ($hex) matches ${options.targetUniform.displayName}';
+          } else {
+            final String observedName = UniformPresetExtension.describeColor(effectiveColor);
+            final String observedHex = UniformPresetExtension.colorToHex(effectiveColor);
+            uniformReason =
+                'Uniform Mismatch: Observed $observedName ($observedHex). Expected ${options.targetUniform.displayName} (${options.targetUniform.primaryColorHex})';
+          }
+
+          // 4. Motorcycle verification
+          final bool motorcyclePass = !options.requireMotorcycle || (faceInFrame && helmetPass);
+          final double motorcycleConf = motorcyclePass ? 0.88 : 0.20;
+          final String motorcycleReason = !options.requireMotorcycle
+              ? 'Motorcycle check optional (turned OFF in settings)'
+              : (motorcyclePass
+                  ? 'Motorcycle two-wheeler context confirmed'
+                  : (faceInFrame
+                      ? 'Motorcycle not detected. Capture rider with vehicle'
+                      : 'Cannot verify vehicle: No rider in frame'));
+
+          // 5. Mask verification
           final bool maskPass = options.requireMask ? false : true;
           final double maskConf = maskPass ? 0.90 : 0.20;
           final String maskReason = options.requireMask
@@ -181,18 +207,34 @@ class DeliveryComplianceService {
           final double? yaw = (data['yawDegrees'] as num?)?.toDouble();
           final double? pitch = (data['pitchDegrees'] as num?)?.toDouble();
 
+          final bool hasTorso = data['hasTorso'] == true;
+          final Color? liveTorsoColor = hasTorso
+              ? Color.fromARGB(
+                  255,
+                  (data['torsoR'] as num? ?? 0).toInt(),
+                  (data['torsoG'] as num? ?? 0).toInt(),
+                  (data['torsoB'] as num? ?? 0).toInt(),
+                )
+              : null;
+
+          final bool? liveHelmet = data.containsKey('hasHelmet') ? data['hasHelmet'] == true : null;
+
           emitEvaluation(
             faceInFrame: hasFace,
             yaw: yaw,
             pitch: pitch,
-            observedColor: clothingColor,
+            observedColor: clothingColor ?? liveTorsoColor,
+            isHelmetDetected: liveHelmet,
           );
         });
 
-        // Periodic ticker ensuring UI stays responsive if detection stream is paused
+        // Initial waiting evaluation while camera starts
         heartbeatTimer = Timer.periodic(const Duration(milliseconds: 350), (_) {
           if (inspectionFrames == 0) {
-            emitEvaluation(faceInFrame: true, observedColor: clothingColor);
+            emitEvaluation(
+              faceInFrame: false,
+              observedColor: clothingColor,
+            );
           }
         });
       },

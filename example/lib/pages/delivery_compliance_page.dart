@@ -59,6 +59,27 @@ class _DeliveryCompliancePageState extends State<DeliveryCompliancePage> {
                   result.statusMessage,
                   style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
                 ),
+                if (result.detectedUniformColor != null) ...<Widget>[
+                  const SizedBox(height: 8),
+                  Row(
+                    children: <Widget>[
+                      Container(
+                        width: 16,
+                        height: 16,
+                        decoration: BoxDecoration(
+                          color: result.detectedUniformColor,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.grey),
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        'Observed Shirt: ${UniformPresetExtension.describeColor(result.detectedUniformColor!)} (${UniformPresetExtension.colorToHex(result.detectedUniformColor!)})',
+                        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ],
                 const Divider(height: 24),
                 ...result.checks.map((chk) {
                   return Padding(
